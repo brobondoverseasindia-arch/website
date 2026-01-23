@@ -11,9 +11,9 @@ const iconMap = {
 
 export function HighlightsSection() {
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding-sm section-light">
       <div className="container-wide">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-4">
           {QUICK_HIGHLIGHTS.map((highlight, index) => {
             const Icon = iconMap[highlight.icon as keyof typeof iconMap];
             return (
@@ -21,17 +21,17 @@ export function HighlightsSection() {
                 key={highlight.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="p-6 rounded-xl bg-card border border-border card-shadow hover-lift"
+                className="group card-elevated p-6 hover-lift"
               >
-                <div className="w-12 h-12 rounded-lg gradient-purple flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-xl gradient-purple flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Icon className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">
                   {highlight.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {highlight.description}
                 </p>
               </motion.div>
