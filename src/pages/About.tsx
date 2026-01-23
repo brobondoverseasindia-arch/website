@@ -8,17 +8,17 @@ const About = () => {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="section-padding gradient-bg">
+      <section className="section-padding section-dark">
         <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-[hsl(var(--section-dark-foreground))] mb-6">
               About BroBond Overseas
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-[hsl(var(--section-dark-foreground))]/70">
               A leading manufacturer and merchant exporter of premium industrial gloves and safety products, 
               headquartered in Kolkata, India. We combine manufacturing excellence with global export expertise.
             </p>
@@ -77,17 +77,17 @@ const About = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className="section-padding bg-secondary/30">
+      <section className="section-padding section-dark">
         <div className="container-wide">
           <div className="grid gap-8 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="p-8 rounded-2xl bg-card border border-border card-shadow"
+              className="p-8 rounded-2xl card-elevated-dark"
             >
-              <h3 className="text-2xl font-bold text-foreground mb-4">Our Mission</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-2xl font-bold text-[hsl(var(--section-dark-foreground))] mb-4">Our Mission</h3>
+              <p className="text-[hsl(var(--section-dark-foreground))]/70">
                 To provide premium quality industrial safety products that protect workers worldwide, 
                 while building lasting partnerships with distributors and buyers through exceptional 
                 service, competitive pricing, and reliable delivery.
@@ -98,10 +98,10 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="p-8 rounded-2xl bg-card border border-border card-shadow"
+              className="p-8 rounded-2xl card-elevated-dark"
             >
-              <h3 className="text-2xl font-bold text-foreground mb-4">Our Vision</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-2xl font-bold text-[hsl(var(--section-dark-foreground))] mb-4">Our Vision</h3>
+              <p className="text-[hsl(var(--section-dark-foreground))]/70">
                 To become the most trusted name in industrial safety exports, recognized globally 
                 for quality, innovation, and customer-centric approach. We aim to expand our reach 
                 to 100+ countries while maintaining the highest standards of manufacturing excellence.
