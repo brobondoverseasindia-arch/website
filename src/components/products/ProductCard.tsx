@@ -21,10 +21,13 @@ interface ProductCardProps {
       }>;
     }>;
   };
+  variant?: "light" | "dark";
   className?: string;
 }
 
-export function ProductCard({ product, className }: ProductCardProps) {
+export function ProductCard({ product, variant = "light", className }: ProductCardProps) {
+  const isDark = variant === "dark";
+  
   // Get first variant's first image as main image
   const mainImage = product.product_variants?.[0]?.product_images?.[0]?.url;
   const colors = product.product_variants?.map((v) => ({
@@ -36,51 +39,86 @@ export function ProductCard({ product, className }: ProductCardProps) {
     <Link
       to={`/products/${product.slug}`}
       className={cn(
-        "group block rounded-xl bg-card border border-border overflow-hidden hover-lift",
+        "group block rounded-xl overflow-hidden hover-lift transition-all duration-300",
+        isDark
+          ? "card-elevated-dark"
+          : "card-elevated",
         className
       )}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-secondary overflow-hidden">
+      <div className="relative aspect-[4/3] bg-secondary/50 overflow-hidden">
         {mainImage ? (
           <img
             src={mainImage}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-muted-foreground">No image</span>
+          <div className={cn(
+            "w-full h-full flex items-center justify-center",
+            isDark ? "bg-white/5" : "bg-secondary"
+          )}>
+            <span className={isDark ? "text-white/40" : "text-muted-foreground"}>
+              No image
+            </span>
           </div>
         )}
         
         {/* Category Badge */}
         {product.category && (
-          <span className="absolute top-3 left-3 px-2 py-1 text-xs font-medium bg-background/90 backdrop-blur-sm rounded-md">
+          <span className={cn(
+            "absolute top-3 left-3 px-3 py-1.5 text-xs font-medium rounded-full backdrop-blur-sm",
+            isDark
+              ? "bg-black/50 text-white border border-white/10"
+              : "bg-white/90 text-foreground shadow-sm"
+          )}>
             {product.category.name}
           </span>
         )}
+
+        {/* Quick Action Overlay */}
+        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center">
+          <span className={cn(
+            "px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300",
+            "bg-primary text-primary-foreground shadow-lg"
+          )}>
+            View Details
+          </span>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+      <div className="p-5">
+        <h3 className={cn(
+          "font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-1",
+          isDark ? "text-white" : "text-foreground"
+        )}>
           {product.name}
         </h3>
         
         {product.short_description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          <p className={cn(
+            "text-sm line-clamp-2 mb-4",
+            isDark ? "text-white/60" : "text-muted-foreground"
+          )}>
             {product.short_description}
           </p>
         )}
 
         {/* Tags */}
         {product.tags && product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
+          <div className="flex flex-wrap gap-1.5 mb-4">
             {product.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 text-xs bg-secondary text-secondary-foreground rounded"
+                className={cn(
+                  "px-2 py-0.5 text-xs rounded-full",
+                  isDark
+                    ? "bg-white/10 text-white/70"
+                    : "bg-secondary text-secondary-foreground"
+                )}
               >
                 {tag}
               </span>
@@ -89,27 +127,30 @@ export function ProductCard({ product, className }: ProductCardProps) {
         )}
 
         {/* Colors & CTA */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-2 border-t border-border/50">
           {colors && colors.length > 0 && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {colors.slice(0, 4).map((color, i) => (
                 <div
                   key={i}
-                  className="w-4 h-4 rounded-full border border-border"
+                  className="w-5 h-5 rounded-full border-2 border-background shadow-sm"
                   style={{ backgroundColor: color.hex || "#ccc" }}
                   title={color.name}
                 />
               ))}
               {colors.length > 4 && (
-                <span className="text-xs text-muted-foreground ml-1">
+                <span className={cn(
+                  "text-xs ml-1",
+                  isDark ? "text-white/50" : "text-muted-foreground"
+                )}>
                   +{colors.length - 4}
                 </span>
               )}
             </div>
           )}
-          <span className="text-sm font-medium text-primary flex items-center gap-1">
-            View Details
-            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+          <span className="text-sm font-medium text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+            Details
+            <ArrowRight className="h-4 w-4" />
           </span>
         </div>
       </div>
