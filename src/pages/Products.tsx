@@ -177,9 +177,9 @@ const Products = () => {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Category</label>
                   <Select
-                    value={selectedCategory}
+                    value={selectedCategory || "__all__"}
                     onValueChange={(value) => {
-                      setSelectedCategory(value);
+                      setSelectedCategory(value === "__all__" ? "" : value);
                       setSelectedSubcategory("");
                     }}
                   >
@@ -187,7 +187,7 @@ const Products = () => {
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Categories</SelectItem>
+                      <SelectItem value="__all__">All Categories</SelectItem>
                       {parentCategories.map((cat) => (
                         <SelectItem key={cat.id} value={cat.id}>
                           {cat.name}
@@ -202,14 +202,14 @@ const Products = () => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground">Subcategory</label>
                     <Select
-                      value={selectedSubcategory}
-                      onValueChange={setSelectedSubcategory}
+                      value={selectedSubcategory || "__all__"}
+                      onValueChange={(value) => setSelectedSubcategory(value === "__all__" ? "" : value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="All Subcategories" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Subcategories</SelectItem>
+                        <SelectItem value="__all__">All Subcategories</SelectItem>
                         {filteredSubcategories.map((cat) => (
                           <SelectItem key={cat.id} value={cat.id}>
                             {cat.name}
@@ -280,9 +280,9 @@ const Products = () => {
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Select
-                    value={selectedCategory}
+                    value={selectedCategory || "__all__"}
                     onValueChange={(value) => {
-                      setSelectedCategory(value);
+                      setSelectedCategory(value === "__all__" ? "" : value);
                       setSelectedSubcategory("");
                     }}
                   >
@@ -290,7 +290,7 @@ const Products = () => {
                       <SelectValue placeholder="Category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Categories</SelectItem>
+                      <SelectItem value="__all__">All Categories</SelectItem>
                       {parentCategories.map((cat) => (
                         <SelectItem key={cat.id} value={cat.id}>
                           {cat.name}
