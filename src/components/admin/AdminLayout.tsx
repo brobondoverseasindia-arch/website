@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { 
   LayoutDashboard, 
   Package, 
@@ -33,35 +32,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        navigate("/admin");
-        return;
-      }
-
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", session.user.id)
-        .eq("role", "admin")
-        .single();
-
-      if (!roleData) {
-        await supabase.auth.signOut();
-        navigate("/admin");
-        toast.error("Access denied");
-        return;
-      }
-
-      setIsLoading(false);
-    };
-
-    checkAuth();
+    const isAuthenticated = localStorage.getItem("admin_authenticated") === "true";
+    if (!isAuthenticated) {
+      navigate("/admin");
+      return;
+    }
+    setIsLoading(false);
   }, [navigate]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem("admin_authenticated");
     navigate("/admin");
     toast.success("Logged out successfully");
   };
