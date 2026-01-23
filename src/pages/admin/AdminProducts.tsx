@@ -30,7 +30,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, Search, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Loader2, Upload, X, Image } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
@@ -42,6 +42,8 @@ const AdminProducts = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [productImages, setProductImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -60,7 +62,15 @@ const AdminProducts = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*, categories(name)")
+        .select(`
+          *,
+          categories(name),
+          product_variants(
+            id,
+            color_name,
+            product_images(url)
+          )
+        `)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -77,8 +87,31 @@ const AdminProducts = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data: TablesInsert<"products">) => {
-      const { error } = await supabase.from("products").insert(data);
+      const { data: product, error } = await supabase.from("products").insert(data).select().single();
       if (error) throw error;
+      
+      // If we have images, create a default variant and attach images
+      if (productImages.length > 0 && product) {
+        const { data: variant, error: variantError } = await supabase
+          .from("product_variants")
+          .insert({ product_id: product.id, color_name: "Default" })
+          .select()
+          .single();
+        
+        if (variantError) throw variantError;
+        
+        // Insert product images
+        const imageInserts = productImages.map((url, index) => ({
+          variant_id: variant.id,
+          url,
+          sort_order: index,
+        }));
+        
+        const { error: imageError } = await supabase.from("product_images").insert(imageInserts);
+        if (imageError) throw imageError;
+      }
+      
+      return product;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
@@ -95,6 +128,38 @@ const AdminProducts = () => {
     mutationFn: async ({ id, data }: { id: string; data: Partial<Product> }) => {
       const { error } = await supabase.from("products").update(data).eq("id", id);
       if (error) throw error;
+      
+      // Handle image updates for existing products
+      if (productImages.length > 0) {
+        // Get or create default variant
+        let { data: variants } = await supabase
+          .from("product_variants")
+          .select("id")
+          .eq("product_id", id)
+          .limit(1);
+        
+        let variantId: string;
+        
+        if (!variants || variants.length === 0) {
+          const { data: newVariant } = await supabase
+            .from("product_variants")
+            .insert({ product_id: id, color_name: "Default" })
+            .select()
+            .single();
+          variantId = newVariant!.id;
+        } else {
+          variantId = variants[0].id;
+        }
+        
+        // Add new images
+        const imageInserts = productImages.map((url, index) => ({
+          variant_id: variantId,
+          url,
+          sort_order: index + 100, // Offset to avoid conflicts
+        }));
+        
+        await supabase.from("product_images").insert(imageInserts);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
@@ -121,6 +186,45 @@ const AdminProducts = () => {
     },
   });
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingImage(true);
+    
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `products/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(filePath);
+
+        return publicUrl;
+      });
+
+      const uploadedUrls = await Promise.all(uploadPromises);
+      setProductImages((prev) => [...prev, ...uploadedUrls]);
+      toast.success(`${uploadedUrls.length} image(s) uploaded`);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to upload images");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setProductImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -135,6 +239,7 @@ const AdminProducts = () => {
       tags: "",
     });
     setEditingProduct(null);
+    setProductImages([]);
   };
 
   const handleEdit = (product: Product) => {
@@ -151,6 +256,7 @@ const AdminProducts = () => {
       applications: product.applications?.join(", ") || "",
       tags: product.tags?.join(", ") || "",
     });
+    setProductImages([]);
     setDialogOpen(true);
   };
 
@@ -174,6 +280,17 @@ const AdminProducts = () => {
     } else {
       createMutation.mutate(productData);
     }
+  };
+
+  const getProductImage = (product: any) => {
+    const variants = product.product_variants;
+    if (variants && variants.length > 0) {
+      const images = variants[0].product_images;
+      if (images && images.length > 0) {
+        return images[0].url;
+      }
+    }
+    return null;
   };
 
   const filteredProducts = products?.filter(
@@ -239,6 +356,62 @@ const AdminProducts = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                {/* Image Upload Section */}
+                <div className="space-y-2">
+                  <Label>Product Images</Label>
+                  <div className="border-2 border-dashed border-border rounded-lg p-4">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="image-upload"
+                      disabled={uploadingImage}
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className="flex flex-col items-center justify-center cursor-pointer py-4"
+                    >
+                      {uploadingImage ? (
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                      ) : (
+                        <>
+                          <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                          <span className="text-sm text-muted-foreground">
+                            Click to upload images or drag and drop
+                          </span>
+                          <span className="text-xs text-muted-foreground mt-1">
+                            PNG, JPG, WEBP up to 10MB
+                          </span>
+                        </>
+                      )}
+                    </label>
+                  </div>
+
+                  {/* Image Preview */}
+                  {productImages.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {productImages.map((url, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={url}
+                            alt={`Product ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -355,6 +528,7 @@ const AdminProducts = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-16">Image</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead className="hidden md:table-cell">Category</TableHead>
                       <TableHead className="hidden sm:table-cell">Status</TableHead>
@@ -363,55 +537,71 @@ const AdminProducts = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredProducts?.map((product) => (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{product.name}</p>
-                            <p className="text-sm text-muted-foreground">{product.slug}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {(product as any).categories?.name || "-"}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <span
-                            className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                              product.is_active
-                                ? "bg-primary/20 text-primary"
-                                : "bg-muted text-muted-foreground"
-                            }`}
-                          >
-                            {product.is_active ? "Active" : "Inactive"}
-                          </span>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {product.featured ? "Yes" : "No"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(product)}
+                    {filteredProducts?.map((product) => {
+                      const imageUrl = getProductImage(product);
+                      return (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            {imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt={product.name}
+                                className="w-12 h-12 object-cover rounded-lg"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                                <Image className="h-5 w-5 text-muted-foreground" />
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{product.name}</p>
+                              <p className="text-sm text-muted-foreground">{product.slug}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {(product as any).categories?.name || "-"}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <span
+                              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                                product.is_active
+                                  ? "bg-primary/20 text-primary"
+                                  : "bg-muted text-muted-foreground"
+                              }`}
                             >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                if (confirm("Delete this product?")) {
-                                  deleteMutation.mutate(product.id);
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                              {product.is_active ? "Active" : "Inactive"}
+                            </span>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {product.featured ? "Yes" : "No"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEdit(product)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  if (confirm("Delete this product?")) {
+                                    deleteMutation.mutate(product.id);
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
