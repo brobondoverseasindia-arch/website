@@ -270,11 +270,14 @@
 
   /* Glass effect for navbar */
   .glass-header {
-    @apply backdrop-blur-xl bg-[hsl(var(--section-dark))]/80 border-b border-[hsl(220_30%_18%)]/50;
+    @apply backdrop-blur-xl;
+    background-color: hsl(220 45% 6% / 0.85);
+    border-bottom: 1px solid hsl(220 30% 18% / 0.5);
   }
 
   .glass-header-transparent {
-    @apply backdrop-blur-none bg-transparent border-b border-transparent;
+    @apply backdrop-blur-none bg-transparent;
+    border-bottom: 1px solid transparent;
   }
 
   /* Typography improvements */
