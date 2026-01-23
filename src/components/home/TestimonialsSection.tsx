@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,14 @@ import { TESTIMONIALS } from "@/lib/constants";
 
 export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-rotate every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const next = () => {
     setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
@@ -19,9 +27,11 @@ export function TestimonialsSection() {
   const testimonial = TESTIMONIALS[currentIndex];
 
   return (
-    <section className="section-padding section-dark noise-overlay relative overflow-hidden">
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 gradient-mesh opacity-20" />
+    <section className="section-padding bg-background relative overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      </div>
       
       <div className="container-wide relative z-10">
         <motion.div
@@ -32,7 +42,6 @@ export function TestimonialsSection() {
           <SectionHeader
             title="Trusted by Global Partners"
             subtitle="See what our international customers say about their experience with BroBond Overseas."
-            dark
           />
         </motion.div>
 
@@ -45,7 +54,7 @@ export function TestimonialsSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="card-elevated-dark p-8 md:p-12 text-center relative overflow-hidden"
+                className="card-elevated p-8 md:p-12 text-center relative overflow-hidden"
               >
                 {/* Decorative quote */}
                 <div className="absolute top-6 left-6 opacity-10">
@@ -67,17 +76,17 @@ export function TestimonialsSection() {
                 </div>
 
                 {/* Content */}
-                <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-2xl mx-auto">
+                <p className="text-lg md:text-xl text-foreground/80 mb-8 leading-relaxed max-w-2xl mx-auto">
                   "{testimonial.content}"
                 </p>
 
                 {/* Divider */}
-                <div className="divider-dark max-w-32 mx-auto mb-6" />
+                <div className="divider max-w-32 mx-auto mb-6" />
 
                 {/* Author */}
                 <div>
-                  <p className="font-semibold text-white text-lg">{testimonial.name}</p>
-                  <p className="text-sm text-white/60">
+                  <p className="font-semibold text-foreground text-lg">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">
                     {testimonial.company} • {testimonial.country}
                   </p>
                 </div>
@@ -90,7 +99,7 @@ export function TestimonialsSection() {
                 variant="outline"
                 size="icon"
                 onClick={prev}
-                className="rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white"
+                className="rounded-full border-border text-foreground hover:bg-secondary hover:text-foreground"
               >
                 <ChevronLeft className="h-5 w-5" />
               </Button>
@@ -103,7 +112,7 @@ export function TestimonialsSection() {
                     className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                       i === currentIndex
                         ? "bg-primary w-8"
-                        : "bg-white/30 hover:bg-white/50"
+                        : "bg-foreground/20 hover:bg-foreground/40"
                     }`}
                     aria-label={`Go to testimonial ${i + 1}`}
                   />
@@ -114,7 +123,7 @@ export function TestimonialsSection() {
                 variant="outline"
                 size="icon"
                 onClick={next}
-                className="rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white"
+                className="rounded-full border-border text-foreground hover:bg-secondary hover:text-foreground"
               >
                 <ChevronRight className="h-5 w-5" />
               </Button>

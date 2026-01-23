@@ -26,42 +26,42 @@ export function HeroSection() {
       {/* Animated Gradient Mesh Background */}
       <div className="absolute inset-0 gradient-mesh opacity-60" />
       
-      {/* Animated Blobs */}
+      {/* Animated Floating Glow - moves across hero */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[100px]"
+          className="absolute w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]"
           animate={{
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.1, 1],
+            x: ["-10%", "80%", "50%", "20%", "-10%"],
+            y: ["-20%", "10%", "60%", "30%", "-20%"],
+            scale: [1, 1.2, 0.9, 1.1, 1],
           }}
           transition={{
-            duration: 12,
+            duration: 25,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
         <motion.div
-          className="absolute top-1/2 -left-40 w-[600px] h-[600px] bg-steel/10 rounded-full blur-[120px]"
+          className="absolute w-[400px] h-[400px] bg-steel/15 rounded-full blur-[120px]"
           animate={{
-            x: [0, -30, 0],
-            y: [0, 40, 0],
-            scale: [1, 0.9, 1],
+            x: ["80%", "20%", "-10%", "60%", "80%"],
+            y: ["60%", "20%", "50%", "80%", "60%"],
+            scale: [0.8, 1.1, 1, 0.9, 0.8],
           }}
           transition={{
-            duration: 15,
+            duration: 30,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
         <motion.div
-          className="absolute -bottom-20 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[80px]"
+          className="absolute w-[350px] h-[350px] bg-accent/10 rounded-full blur-[100px]"
           animate={{
-            x: [0, 20, 0],
-            y: [0, -20, 0],
+            x: ["50%", "10%", "70%", "30%", "50%"],
+            y: ["30%", "70%", "20%", "50%", "30%"],
           }}
           transition={{
-            duration: 10,
+            duration: 20,
             repeat: Infinity,
             ease: "easeInOut",
           }}
