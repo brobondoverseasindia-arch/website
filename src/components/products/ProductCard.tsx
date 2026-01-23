@@ -79,10 +79,9 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
         )}
 
         {/* Quick Action Overlay */}
-        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end justify-center pb-4 opacity-100 group-hover:opacity-100 transition-opacity duration-300">
           <span className={cn(
-            "px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300",
-            "bg-primary text-primary-foreground shadow-lg"
+            "px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground shadow-lg transform translate-y-0 group-hover:scale-105 transition-all duration-300"
           )}>
             View Details
           </span>
