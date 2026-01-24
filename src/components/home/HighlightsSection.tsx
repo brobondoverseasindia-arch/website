@@ -166,110 +166,92 @@ export function HighlightsSection() {
                     </div>
                   )}
 
-                  {/* 3. Quality Visual - Intelligent Scan */}
+                  {/* 3. Quality Visual - Layered Material Inspection */}
                   {index === 2 && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="relative w-32 h-40">
-                        {/* Shield Base */}
-                        <div className="absolute inset-0 bg-white dark:bg-card rounded-2xl shadow-xl border border-border flex items-center justify-center overflow-hidden">
-                          <Shield className="w-12 h-12 text-muted-foreground/20" />
-                          
-                          {/* Colored Shield Fill */}
-                          <motion.div 
-                            className="absolute inset-0 flex items-center justify-center bg-primary/5"
-                            initial={{ opacity: 0 }}
-                            whileHover={{ opacity: 1 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <Shield className="w-12 h-12 text-primary" />
-                          </motion.div>
-
-                          {/* Scanner Line */}
-                          <motion.div
-                            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 z-10"
-                            whileHover={{ 
-                              top: ["0%", "100%"], 
-                              opacity: [0, 1, 0],
-                              transition: { duration: 1.5, repeat: Infinity, ease: "linear" } 
-                            }}
-                          />
-                        </div>
-
-                        {/* Verified Badge */}
-                        <motion.div
-                          className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-white dark:bg-card text-green-600 dark:text-green-400 text-[10px] font-bold uppercase tracking-wider rounded-full flex items-center gap-1.5 border border-green-500/20 shadow-lg"
-                          initial={{ scale: 0.8, opacity: 0, y: 10 }}
-                          whileHover={{ scale: 1, opacity: 1, y: 0 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    <div className="absolute inset-0 flex items-center justify-center perspective-[1000px]">
+                      <div className="relative w-32 h-40 flex items-center justify-center">
+                        
+                        {/* Layer 1: Raw Material Structure */}
+                        <motion.div 
+                          className="absolute inset-0 border border-border/50 rounded-2xl shadow-sm flex items-center justify-center z-10"
+                          whileHover={{ y: 15, scale: 0.9, opacity: 0.6 }}
+                          transition={{ duration: 0.4 }}
                         >
-                          <Check className="w-3 h-3" />
-                          Verified
+                          <div className="w-full h-full opacity-10" 
+                               style={{ backgroundImage: 'radial-gradient(circle, currentColor 2px, transparent 2px)', backgroundSize: '12px 12px' }} 
+                          />
                         </motion.div>
 
-                        {/* Floating Particles */}
-                        <div className="absolute -top-6 -right-6">
-                          <Sparkles className="w-6 h-6 text-primary/40 group-hover:text-primary transition-colors duration-300 group-hover:animate-pulse" />
-                        </div>
+                        {/* Layer 2: Strength Grid */}
+                        <motion.div 
+                          className="absolute inset-0 border border-primary/10 rounded-2xl shadow-md flex items-center justify-center z-20"
+                          whileHover={{ y: 0, scale: 0.95, opacity: 0.8 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <div className="absolute inset-4 border-2 border-dashed border-primary/20 rounded-lg" />
+                          <Activity className="w-8 h-8 text-primary/20" />
+                        </motion.div>
+
+                        {/* Layer 3: Final Shield (Top) */}
+                        <motion.div 
+                          className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30"
+                          whileHover={{ y: -15, scale: 1.05 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <div className="p-4 bg-white dark:bg-card rounded-2xl shadow-xl ring-1 ring-black/5 flex items-center justify-center">
+                            <Shield className="w-10 h-10 text-primary fill-primary/10" />
+                          </div>
+                          
+                          <div className="px-3 py-1.5 rounded-full bg-white dark:bg-card border border-border shadow-md text-green-600 dark:text-green-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <Check className="w-3 h-3" />
+                            Certified
+                          </div>
+                        </motion.div>
+
+                        {/* Connecting Glow */}
+                        <div className="absolute inset-0 bg-primary/5 rounded-3xl blur-2xl -z-10 group-hover:bg-primary/10 transition-colors duration-500" />
                       </div>
                     </div>
                   )}
 
-                  {/* 4. Delivery Visual - Route Progress */}
+                  {/* 4. Delivery Visual - Orbital Logistics */}
                   {index === 3 && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
-                       <div className="w-full relative flex items-center justify-between">
-                         {/* Route Line Base */}
-                         <div className="absolute left-4 right-4 h-0.5 bg-border/50" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <div className="relative w-64 h-full flex items-center justify-center">
                          
-                         {/* Animated Route Line */}
-                         <div className="absolute left-4 h-0.5 bg-primary origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-1000 ease-out" style={{ width: "calc(100% - 2rem)" }} />
+                         {/* Orbital Rings */}
+                         <div className="absolute w-40 h-40 border border-dashed border-primary/10 rounded-full animate-[spin_20s_linear_infinite]" />
+                         <div className="absolute w-56 h-56 border border-border/40 rounded-full opacity-50" />
 
-                         {/* Package Icon (Start) */}
+                         {/* Central Hub */}
+                         <div className="relative z-10 w-16 h-16 bg-white dark:bg-card rounded-2xl shadow-xl border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                           <Package className="w-8 h-8 text-primary fill-primary/5" />
+                           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-card animate-pulse" />
+                         </div>
+
+                         {/* Orbiting Truck */}
                          <motion.div 
-                           className="relative z-10 p-2.5 rounded-xl bg-white dark:bg-card border border-border shadow-sm group-hover:border-primary/50 group-hover:text-primary transition-colors duration-300"
-                           whileHover={{ scale: 1.1 }}
+                           className="absolute w-40 h-40 rounded-full"
+                           animate={{ rotate: 360 }}
+                           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                          >
-                           <Package className="w-5 h-5" />
+                           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white dark:bg-card p-2 rounded-lg shadow-md border border-primary/10 transform -rotate-0">
+                             <Truck className="w-4 h-4 text-primary" />
+                           </div>
                          </motion.div>
 
-                         {/* Truck Icon (Moving) */}
+                         {/* Orbiting Plane/Check */}
                          <motion.div 
-                           className="absolute left-4 z-20 p-2 rounded-lg bg-primary text-primary-foreground shadow-lg opacity-0"
-                           whileHover={{ 
-                             left: ["1rem", "calc(100% - 3rem)"], 
-                             opacity: [0, 1, 1, 0],
-                             transition: { duration: 1.2, ease: "easeInOut" } 
-                           }}
+                           className="absolute w-28 h-28 rounded-full"
+                           animate={{ rotate: -360 }}
+                           transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                          >
-                           <Truck className="w-4 h-4" />
+                           <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-secondary p-1.5 rounded-full shadow-sm border border-border">
+                             <Clock className="w-3 h-3 text-muted-foreground" />
+                           </div>
                          </motion.div>
 
-                         {/* Destination Icon (End) */}
-                         <motion.div 
-                           className="relative z-10 p-2.5 rounded-xl bg-white dark:bg-card border border-border shadow-sm group-hover:border-primary/50 group-hover:text-primary transition-colors duration-300 delay-1000"
-                           whileHover={{ scale: 1.1 }}
-                         >
-                           <MapPin className="w-5 h-5" />
-                         </motion.div>
                        </div>
-
-                       {/* Status Tag */}
-                       <motion.div
-                         className="mt-6 px-3 py-1 rounded-full bg-secondary text-[10px] font-medium text-muted-foreground"
-                         initial={{ opacity: 0.5 }}
-                         whileHover={{ 
-                           opacity: 1, 
-                           scale: 1.05,
-                           backgroundColor: "hsl(var(--primary))", 
-                           color: "hsl(var(--primary-foreground))" 
-                         }}
-                         transition={{ duration: 0.3 }}
-                       >
-                         <span className="group-hover:hidden">Ready to Ship</span>
-                         <span className="hidden group-hover:inline flex items-center gap-1">
-                           <Clock className="w-3 h-3" /> On Time Delivery
-                         </span>
-                       </motion.div>
                     </div>
                   )}
 
