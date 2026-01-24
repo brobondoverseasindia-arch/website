@@ -7,20 +7,23 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MouseEvent } from "react";
+import { MouseEvent, useRef } from "react";
 
 function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect();
+  function handleMouseMove({ clientX, clientY }: MouseEvent) {
+    if (!cardRef.current) return;
+    const { left, top } = cardRef.current.getBoundingClientRect();
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
   }
 
   return (
     <div
+      ref={cardRef}
       className={`group relative border border-white/10 overflow-hidden rounded-xl bg-white/5 ${className}`}
       onMouseMove={handleMouseMove}
     >
