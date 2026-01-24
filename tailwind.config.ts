@@ -78,6 +78,10 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionTimingFunction: {
+        "apple": "cubic-bezier(0.25, 0.1, 0.25, 1.0)",
+        "apple-out": "cubic-bezier(0.16, 1, 0.3, 1)", // Expo ease-out
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

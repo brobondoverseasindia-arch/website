@@ -27,12 +27,13 @@ export function HighlightsSection() {
             return (
               <motion.div
                 key={highlight.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 }}
+                whileHover={{ y: -5, transition: { type: "spring", stiffness: 300, damping: 20 } }}
                 className={cn(
-                  "group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white dark:bg-card/50 transition-all duration-500",
+                  "group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white dark:bg-card/50",
                   "border border-border/60 hover:border-primary/30",
                   "shadow-[0_2px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_20px_40px_-12px_rgba(var(--primary),0.1)]",
                   isTall ? "md:row-span-2" : "",
