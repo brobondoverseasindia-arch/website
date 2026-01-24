@@ -21,7 +21,7 @@ const STATS = [
   { value: "100%", label: "Export Ready" },
 ];
 
-const AnimatedCounter = ({ value, duration = 2 }: { value: string; duration?: number }) => {
+const AnimatedCounter = ({ value, duration = 2.5 }: { value: string; duration?: number }) => {
   const numericValue = parseInt(value.replace(/\D/g, ""));
   const suffix = value.replace(/[0-9]/g, "");
   
