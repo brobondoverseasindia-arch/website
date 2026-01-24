@@ -171,27 +171,6 @@ export function HighlightsSection() {
                     <div className="absolute inset-0 flex items-center justify-center perspective-[1000px]">
                       <div className="relative w-32 h-40 flex items-center justify-center">
                         
-                        {/* Layer 1: Raw Material Structure */}
-                        <motion.div 
-                          className="absolute inset-0 border border-border/50 rounded-2xl shadow-sm flex items-center justify-center z-10"
-                          whileHover={{ y: 15, scale: 0.9, opacity: 0.6 }}
-                          transition={{ duration: 0.4 }}
-                        >
-                          <div className="w-full h-full opacity-10" 
-                               style={{ backgroundImage: 'radial-gradient(circle, currentColor 2px, transparent 2px)', backgroundSize: '12px 12px' }} 
-                          />
-                        </motion.div>
-
-                        {/* Layer 2: Strength Grid */}
-                        <motion.div 
-                          className="absolute inset-0 border border-primary/10 rounded-2xl shadow-md flex items-center justify-center z-20"
-                          whileHover={{ y: 0, scale: 0.95, opacity: 0.8 }}
-                          transition={{ duration: 0.4 }}
-                        >
-                          <div className="absolute inset-4 border-2 border-dashed border-primary/20 rounded-lg" />
-                          <Activity className="w-8 h-8 text-primary/20" />
-                        </motion.div>
-
                         {/* Layer 3: Final Shield (Top) */}
                         <motion.div 
                           className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-30"
