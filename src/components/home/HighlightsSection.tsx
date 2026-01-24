@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Factory, Globe, Shield, Package, ArrowRight } from "lucide-react";
+import { Factory, Globe, Shield, Package, ArrowRight, Sparkles } from "lucide-react";
 import { QUICK_HIGHLIGHTS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -12,23 +12,21 @@ const iconMap = {
 
 export function HighlightsSection() {
   return (
-    <section className="section-padding-sm section-light">
-      <div className="container-wide">
-        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-3 auto-rows-[250px]">
+    <section className="section-padding-sm bg-secondary/30 relative overflow-hidden">
+      {/* Background Blobs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="container-wide relative z-10">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-3 auto-rows-[280px]">
           {QUICK_HIGHLIGHTS.map((highlight, index) => {
             const Icon = iconMap[highlight.icon as keyof typeof iconMap];
             
-            // Bento Grid Layout Logic
-            // Item 0: Manufactured in Kolkata -> Span 1
-            // Item 1: Global Export Network -> Span 2 (Featured)
-            // Item 2: Premium Quality -> Span 1
-            // Item 3: Reliable Delivery -> Span 2 (Featured)
-            
-            // Adjusting indices to match the desired layout:
-            // Let's make index 1 (Global Export) and index 3 (Delivery) span 2 columns
-            // But wait, the array order is:
-            // 0: Factory, 1: Globe, 2: Shield, 3: Package
-            
+            // Layout: 
+            // 0: Small
+            // 1: Wide (Global)
+            // 2: Small
+            // 3: Wide (Delivery)
             const isWide = index === 1 || index === 3;
             
             return (
@@ -39,38 +37,47 @@ export function HighlightsSection() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className={cn(
-                  "group relative overflow-hidden rounded-2xl p-8 transition-all duration-300 hover-lift flex flex-col justify-between",
-                  isWide ? "md:col-span-2 bg-gradient-to-br from-[hsl(var(--card))] to-secondary/30" : "md:col-span-1 bg-card",
-                  "border border-border/50 hover:border-primary/20 shadow-sm hover:shadow-md"
+                  "group relative overflow-hidden rounded-[2rem] p-8 transition-all duration-500",
+                  "bg-white dark:bg-card border border-white/50 dark:border-white/5",
+                  "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)]",
+                  isWide ? "md:col-span-2" : "md:col-span-1"
                 )}
               >
-                {/* Background Decoration for Wide Cards */}
-                {isWide && (
-                  <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
-                )}
+                {/* Hover Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Decorative Grid Pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                     style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }} 
+                />
 
-                <div className="relative z-10">
-                  <div className={cn(
-                    "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110",
-                    isWide ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "bg-secondary text-primary"
-                  )}>
-                    <Icon className="h-7 w-7" />
+                <div className="relative z-10 h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className={cn(
+                      "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3",
+                      isWide 
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                        : "bg-secondary text-primary dark:bg-secondary/50"
+                    )}>
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    {isWide && (
+                      <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
+                        <ArrowRight className="h-5 w-5 text-primary" />
+                      </div>
+                    )}
                   </div>
                   
-                  <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                    {highlight.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground leading-relaxed max-w-md">
-                    {highlight.description}
-                  </p>
+                  <div className="mt-auto">
+                    <h3 className="text-xl font-bold text-foreground mb-3 tracking-tight group-hover:text-primary transition-colors duration-300">
+                      {highlight.title}
+                    </h3>
+                    
+                    <p className="text-muted-foreground leading-relaxed text-[15px]">
+                      {highlight.description}
+                    </p>
+                  </div>
                 </div>
-
-                {isWide && (
-                  <div className="relative z-10 mt-6 flex items-center text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
-                    Learn more <ArrowRight className="ml-2 h-4 w-4" />
-                  </div>
-                )}
               </motion.div>
             );
           })}
