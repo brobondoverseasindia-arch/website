@@ -35,21 +35,23 @@ export function Header() {
       )}
     >
       <div className="container-wide">
-        <div className="flex h-16 md:h-20 items-center justify-between">
+        <div className="flex h-16 md:h-20 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-purple transition-transform group-hover:scale-105">
-              <span className="text-lg font-bold text-primary-foreground">B</span>
-            </div>
-            <span
-              className={cn(
-                "text-xl font-bold transition-colors",
-                showTransparent ? "text-white" : "text-white"
-              )}
-            >
-              {COMPANY.name}
-            </span>
-          </Link>
+          <div className="flex-1 flex justify-start">
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-purple transition-transform group-hover:scale-105">
+                <span className="text-lg font-bold text-primary-foreground">B</span>
+              </div>
+              <span
+                className={cn(
+                  "text-xl font-bold transition-colors",
+                  showTransparent ? "text-white" : "text-white"
+                )}
+              >
+                {COMPANY.name}
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
@@ -78,30 +80,32 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center gap-4">
-            <Button asChild className="btn-glow">
-              <Link to="/contact">Request a Quote</Link>
-            </Button>
-          </div>
+          {/* CTA Button & Mobile Toggle */}
+          <div className="flex-1 flex justify-end gap-4">
+            <div className="hidden md:flex items-center gap-4">
+              <Button asChild className="btn-glow">
+                <Link to="/contact">Request a Quote</Link>
+              </Button>
+            </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className={cn(
-              "md:hidden p-2 rounded-lg transition-colors",
-              showTransparent
-                ? "text-white hover:bg-white/10"
-                : "text-white hover:bg-white/10"
-            )}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              className={cn(
+                "md:hidden p-2 rounded-lg transition-colors",
+                showTransparent
+                  ? "text-white hover:bg-white/10"
+                  : "text-white hover:bg-white/10"
+              )}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -39,7 +39,7 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
     <Link
       to={`/products/${product.slug}`}
       className={cn(
-        "group block rounded-xl overflow-hidden hover-lift transition-all duration-300",
+        "group block rounded-xl overflow-hidden hover-lift transition-all duration-300 flex flex-col h-full",
         isDark
           ? "card-elevated-dark"
           : "card-elevated",
@@ -89,9 +89,9 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
       </div>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-6 flex flex-col flex-1">
         <h3 className={cn(
-          "font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-1",
+          "font-semibold mb-3 text-lg group-hover:text-primary transition-colors line-clamp-1",
           isDark ? "text-white" : "text-foreground"
         )}>
           {product.name}
@@ -99,7 +99,7 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
         
         {product.short_description && (
           <p className={cn(
-            "text-sm line-clamp-2 mb-4",
+            "text-sm line-clamp-2 mb-6 leading-relaxed",
             isDark ? "text-white/60" : "text-muted-foreground"
           )}>
             {product.short_description}
@@ -108,14 +108,14 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
 
         {/* Tags */}
         {product.tags && product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className="flex flex-wrap gap-2 mb-6 mt-auto">
             {product.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
                 className={cn(
-                  "px-2 py-0.5 text-xs rounded-full",
+                  "px-2.5 py-1 text-xs font-medium rounded-md",
                   isDark
-                    ? "bg-white/10 text-white/70"
+                    ? "bg-white/5 text-white/70 border border-white/10"
                     : "bg-secondary text-secondary-foreground"
                 )}
               >
@@ -126,28 +126,42 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
         )}
 
         {/* Colors & CTA */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          {colors && colors.length > 0 && (
-            <div className="flex items-center gap-1.5">
+        <div className={cn(
+          "flex items-center justify-between pt-5 mt-auto border-t",
+          isDark ? "border-white/10" : "border-border/50"
+        )}>
+          {colors && colors.length > 0 ? (
+            <div className="flex items-center -space-x-1.5 hover:space-x-0.5 transition-all duration-300">
               {colors.slice(0, 4).map((color, i) => (
                 <div
                   key={i}
-                  className="w-5 h-5 rounded-full border-2 border-background shadow-sm"
+                  className={cn(
+                    "w-6 h-6 rounded-full border-2 shadow-sm transition-transform hover:scale-110 hover:z-10",
+                    isDark ? "border-[hsl(var(--card))]" : "border-background"
+                  )}
                   style={{ backgroundColor: color.hex || "#ccc" }}
                   title={color.name}
                 />
               ))}
               {colors.length > 4 && (
-                <span className={cn(
-                  "text-xs ml-1",
-                  isDark ? "text-white/50" : "text-muted-foreground"
+                <div className={cn(
+                  "w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-medium",
+                  isDark 
+                    ? "border-[hsl(var(--card))] bg-white/10 text-white" 
+                    : "border-background bg-secondary text-muted-foreground"
                 )}>
                   +{colors.length - 4}
-                </span>
+                </div>
               )}
             </div>
+          ) : (
+            <div /> // Spacer if no colors
           )}
-          <span className="text-sm font-medium text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+          
+          <span className={cn(
+            "text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all",
+            isDark ? "text-primary-foreground/90 group-hover:text-primary" : "text-primary"
+          )}>
             Details
             <ArrowRight className="h-4 w-4" />
           </span>
