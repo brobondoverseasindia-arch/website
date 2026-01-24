@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Factory, Globe, Truck, Shield, Award, Package } from "lucide-react";
@@ -19,6 +20,57 @@ const STATS = [
   { value: "500K+", label: "Units Monthly" },
   { value: "100%", label: "Export Ready" },
 ];
+
+const AnimatedCounter = ({ value, duration = 2 }: { value: string; duration?: number }) => {
+  const numericValue = parseInt(value.replace(/\D/g, ""));
+  const suffix = value.replace(/[0-9]/g, "");
+  
+  return (
+    <motion.span
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      className="inline-flex"
+    >
+      <motion.span
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+      >
+        <CountUp end={numericValue} duration={duration} suffix={suffix} />
+      </motion.span>
+    </motion.span>
+  );
+};
+
+const CountUp = ({ end, duration, suffix }: { end: number; duration: number; suffix: string }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      const percentage = Math.min(progress / (duration * 1000), 1);
+      
+      // Easing function for smooth deceleration
+      const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
+      
+      setCount(Math.floor(easeOutQuart * end));
+
+      if (progress < duration * 1000) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [end, duration]);
+
+  return <>{count}{suffix}</>;
+};
 
 export function HeroSection() {
   return (
@@ -210,12 +262,12 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                className="card-elevated-dark p-5 md:p-6 text-center"
+                className="card-elevated-dark p-5 md:p-6 text-center group hover:border-primary/30 transition-colors"
               >
                 <div className="text-2xl md:text-3xl font-bold text-gradient mb-1">
-                  {stat.value}
+                  <AnimatedCounter value={stat.value} />
                 </div>
-                <div className="text-xs md:text-sm text-white/60">
+                <div className="text-xs md:text-sm text-white/60 group-hover:text-white/80 transition-colors">
                   {stat.label}
                 </div>
               </motion.div>
