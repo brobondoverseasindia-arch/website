@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -36,6 +36,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 
 type Product = Tables<"products">;
+
+// Define specific types for product relations
+interface ProductWithRelations extends Product {
+  categories: { name: string | null } | null;
+  product_variants: {
+    id: string;
+    color_name: string;
+    product_images: { url: string }[];
+  }[];
+}
 
 const AdminProducts = () => {
   const queryClient = useQueryClient();
@@ -73,7 +83,8 @@ const AdminProducts = () => {
         `)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      // Cast the data to include relations
+      return data as unknown as ProductWithRelations[];
     },
   });
 
@@ -132,7 +143,7 @@ const AdminProducts = () => {
       // Handle image updates for existing products
       if (productImages.length > 0) {
         // Get or create default variant
-        let { data: variants } = await supabase
+        const { data: variants } = await supabase
           .from("product_variants")
           .select("id")
           .eq("product_id", id)
@@ -140,12 +151,14 @@ const AdminProducts = () => {
         
         let variantId: string;
         
+        // Fix: 'variants' is now const, logic handles null/empty check
         if (!variants || variants.length === 0) {
           const { data: newVariant } = await supabase
             .from("product_variants")
             .insert({ product_id: id, color_name: "Default" })
             .select()
             .single();
+          // Assuming creation succeeds if we get here, strictly implies newVariant exists
           variantId = newVariant!.id;
         } else {
           variantId = variants[0].id;
@@ -214,8 +227,10 @@ const AdminProducts = () => {
       const uploadedUrls = await Promise.all(uploadPromises);
       setProductImages((prev) => [...prev, ...uploadedUrls]);
       toast.success(`${uploadedUrls.length} image(s) uploaded`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to upload images");
+    } catch (error: unknown) {
+      // Fix: Type safe error handling
+      const errorMessage = error instanceof Error ? error.message : "Failed to upload images";
+      toast.error(errorMessage);
     } finally {
       setUploadingImage(false);
     }
@@ -282,7 +297,8 @@ const AdminProducts = () => {
     }
   };
 
-  const getProductImage = (product: any) => {
+  const getProductImage = (product: ProductWithRelations) => {
+    // Fix: Using typed relations instead of implicit any
     const variants = product.product_variants;
     if (variants && variants.length > 0) {
       const images = variants[0].product_images;
@@ -561,7 +577,8 @@ const AdminProducts = () => {
                             </div>
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {(product as any).categories?.name || "-"}
+                            {/* Fix: Use typed access for categories.name */}
+                            {product.categories?.name || "-"}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             <span

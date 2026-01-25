@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// Fix: Use ES import instead of require
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -78,6 +80,10 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionTimingFunction: {
+        "apple": "cubic-bezier(0.25, 0.1, 0.25, 1.0)",
+        "apple-out": "cubic-bezier(0.16, 1, 0.3, 1)", // Expo ease-out
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -111,6 +117,10 @@ export default {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "0.7" },
         },
+        "scroll": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -121,8 +131,9 @@ export default {
         "slide-in-right": "slide-in-right 0.3s ease-out",
         "float": "float 6s ease-in-out infinite",
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "scroll": "scroll 40s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
