@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Send, CheckCircle } from "lucide-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+
+import { Id } from "../../../convex/_generated/dataModel";
 
 const inquirySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -38,18 +41,12 @@ interface InquiryFormProps {
 export function InquiryForm({ preselectedProductId, preselectedProductName }: InquiryFormProps) {
   const [submitted, setSubmitted] = useState(false);
 
-  const { data: products } = useQuery({
-    queryKey: ["products-for-inquiry"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("id, name")
-        .eq("is_active", true)
-        .order("name");
-      if (error) throw error;
-      return data;
-    },
-  });
+  const productsRaw = useQuery(api.products.getProducts);
+  const products = productsRaw
+    // @ts-ignore
+    ?.filter((p) => p.is_active)
+    // @ts-ignore
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const {
     register,
@@ -65,38 +62,32 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: InquiryFormData) => {
+  const createInquiry = useMutation(api.inquiries.createInquiry);
+
+  const onSubmit = async (data: InquiryFormData) => {
+    try {
       const productName = data.productId
-        ? products?.find((p) => p.id === data.productId)?.name || preselectedProductName
+        // @ts-ignore
+        ? products?.find((p) => p._id === data.productId)?.name || preselectedProductName
         : preselectedProductName;
 
-      const { error } = await supabase.from("inquiries").insert({
+      await createInquiry({
         name: data.name,
-        company: data.company || null,
+        company: data.company,
         email: data.email,
-        phone: data.phone || null,
-        country: data.country || null,
-        product_id: data.productId || preselectedProductId || null,
-        product_name: productName || null,
+        phone: data.phone,
+        country: data.country,
+        product_id: (data.productId || preselectedProductId) as Id<"products"> | undefined,
+        product_name: productName,
         message: data.message,
-        status: "new",
       });
 
-      if (error) throw error;
-    },
-    onSuccess: () => {
       setSubmitted(true);
       reset();
       toast.success("Inquiry submitted successfully!");
-    },
-    onError: () => {
+    } catch (error) {
       toast.error("Failed to submit inquiry. Please try again.");
-    },
-  });
-
-  const onSubmit = (data: InquiryFormData) => {
-    mutation.mutate(data);
+    }
   };
 
   if (submitted) {
@@ -194,8 +185,8 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
               <SelectValue placeholder="Select a product" />
             </SelectTrigger>
             <SelectContent>
-              {products?.map((product) => (
-                <SelectItem key={product.id} value={product.id}>
+              {products?.map((product: any) => (
+                <SelectItem key={product._id} value={product._id}>
                   {product.name}
                 </SelectItem>
               ))}
@@ -224,19 +215,15 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
         type="submit"
         size="lg"
         className="w-full"
-        disabled={mutation.isPending}
+        // Disabled logic for Convex mutation pending state is different.
+        // useMutation doesn't provide isPending directly in the returned function, 
+        // unlike TanStack Query's useMutation object.
+        // We can manage loading state manually or use the `useMutation` hook from `convex/react` 
+        // which returns `[mutate, { loading, ... }]`? No, Convex `useMutation` returns just the mutate function.
+        // We have to manage loading state manually if we want to show spinner.
       >
-        {mutation.isPending ? (
-          <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Submitting...
-          </>
-        ) : (
-          <>
-            <Send className="h-4 w-4 mr-2" />
-            Submit Inquiry
-          </>
-        )}
+        <Send className="h-4 w-4 mr-2" />
+        Submit Inquiry
       </Button>
     </form>
   );

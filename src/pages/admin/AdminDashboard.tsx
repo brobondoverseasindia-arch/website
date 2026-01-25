@@ -1,42 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, FolderTree, MessageSquare, Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AdminDashboard = () => {
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ["admin-stats"],
-    queryFn: async () => {
-      const [productsRes, categoriesRes, inquiriesRes] = await Promise.all([
-        supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("categories").select("id", { count: "exact", head: true }),
-        supabase.from("inquiries").select("id, status", { count: "exact" }),
-      ]);
-
-      const newInquiries = inquiriesRes.data?.filter(i => i.status === "new").length || 0;
-
-      return {
-        products: productsRes.count || 0,
-        categories: categoriesRes.count || 0,
-        inquiries: inquiriesRes.count || 0,
-        newInquiries,
-      };
-    },
-  });
-
-  const { data: recentInquiries, isLoading: loadingInquiries } = useQuery({
-    queryKey: ["recent-inquiries"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("inquiries")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data || [];
-    },
-  });
+  const stats = useQuery(api.dashboard.getStats);
+  const recentInquiries = useQuery(api.dashboard.getRecentInquiries);
+  const isLoading = stats === undefined;
+  const loadingInquiries = recentInquiries === undefined;
 
   const statCards = [
     { title: "Total Products", value: stats?.products || 0, icon: Package, color: "bg-primary" },
@@ -97,7 +70,7 @@ const AdminDashboard = () => {
               <div className="space-y-3">
                 {recentInquiries?.map((inquiry) => (
                   <div
-                    key={inquiry.id}
+                    key={inquiry._id}
                     className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 border border-border"
                   >
                     <div className="flex-1 min-w-0">
