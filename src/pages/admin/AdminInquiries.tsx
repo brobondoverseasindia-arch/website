@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,12 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Eye, Mail, Phone, Building, Globe, Loader2 } from "lucide-react";
+import { Search, Eye, Mail, Phone, Building, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Tables } from "@/integrations/supabase/types";
-
-type Inquiry = Tables<"inquiries">;
+import { Id } from "../../../convex/_generated/dataModel";
 
 const statusOptions = [
   { value: "new", label: "New", color: "bg-primary/20 text-primary" },
@@ -41,38 +40,29 @@ const statusOptions = [
 ];
 
 const AdminInquiries = () => {
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  // @ts-ignore
+  const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
 
-  const { data: inquiries, isLoading } = useQuery({
-    queryKey: ["admin-inquiries"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("inquiries")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const inquiries = useQuery(api.inquiries.getInquiries);
+  const isLoading = inquiries === undefined;
 
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("inquiries").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-inquiries"] });
+  const updateStatusMutation = useMutation(api.inquiries.updateInquiryStatus);
+
+  const handleUpdateStatus = async (id: Id<"inquiries">, status: string) => {
+    try {
+      await updateStatusMutation({ id, status });
       toast.success("Status updated");
-    },
-    onError: (error) => {
+      if (selectedInquiry && selectedInquiry._id === id) {
+        setSelectedInquiry({ ...selectedInquiry, status });
+      }
+    } catch (error: any) {
       toast.error(error.message);
-    },
-  });
+    }
+  };
 
-  const filteredInquiries = inquiries?.filter((i) => {
+  const filteredInquiries = inquiries?.filter((i: any) => {
     const matchesSearch =
       i.name.toLowerCase().includes(search.toLowerCase()) ||
       i.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -140,8 +130,8 @@ const AdminInquiries = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredInquiries?.map((inquiry) => (
-                      <TableRow key={inquiry.id}>
+                    {filteredInquiries?.map((inquiry: any) => (
+                      <TableRow key={inquiry._id}>
                         <TableCell>
                           <div>
                             <p className="font-medium">{inquiry.name}</p>
@@ -157,7 +147,7 @@ const AdminInquiries = () => {
                         <TableCell>
                           <Select
                             value={inquiry.status}
-                            onValueChange={(value) => updateStatusMutation.mutate({ id: inquiry.id, status: value })}
+                            onValueChange={(value) => handleUpdateStatus(inquiry._id, value)}
                           >
                             <SelectTrigger className="w-28 h-8">
                               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(inquiry.status)}`}>
@@ -257,10 +247,7 @@ const AdminInquiries = () => {
                     <span className="text-sm text-muted-foreground">Status:</span>
                     <Select
                       value={selectedInquiry.status}
-                      onValueChange={(value) => {
-                        updateStatusMutation.mutate({ id: selectedInquiry.id, status: value });
-                        setSelectedInquiry({ ...selectedInquiry, status: value });
-                      }}
+                      onValueChange={(value) => handleUpdateStatus(selectedInquiry._id, value)}
                     >
                       <SelectTrigger className="w-32">
                         <SelectValue />
