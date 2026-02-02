@@ -28,19 +28,17 @@ const ProductDetail = () => {
   
   // Select first variant by default
   const selectedVariant = useMemo(() => {
-    if (!product?.product_variants?.length) return null;
+    if (!product || !product.product_variants || !product.product_variants.length) return null;
     const variant = selectedVariantId
-      // @ts-ignore
-      ? product.product_variants.find((v) => v._id === selectedVariantId)
+      ? product.product_variants.find((v: any) => v._id === selectedVariantId)
       : product.product_variants[0];
     return variant || product.product_variants[0];
   }, [product, selectedVariantId]);
 
   // Get images for selected variant
   const images = useMemo(() => {
-    if (!selectedVariant?.product_images?.length) return [];
-    // @ts-ignore
-    return [...selectedVariant.product_images].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+    if (!selectedVariant || !selectedVariant.product_images || !selectedVariant.product_images.length) return [];
+    return [...selectedVariant.product_images].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
   }, [selectedVariant]);
 
   // Parse specifications safely
@@ -127,8 +125,7 @@ const ProductDetail = () => {
                 {images[selectedImageIndex] ? (
                   <>
                     <img
-                      // @ts-ignore
-                      src={images[selectedImageIndex].url}
+                      src={(images[selectedImageIndex] as any).url}
                       alt={product!.name}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
@@ -177,8 +174,7 @@ const ProductDetail = () => {
               {/* Category Badge */}
               {product!.category && (
                 <span className="inline-block px-3 py-1 text-sm bg-secondary text-secondary-foreground rounded-full">
-                  {/* @ts-ignore */}
-                  {product.category.name}
+                  {(product.category as any).name}
                 </span>
               )}
 
@@ -212,8 +208,7 @@ const ProductDetail = () => {
               {product!.product_variants && product!.product_variants.length > 1 && (
                 <div className="space-y-3">
                   <label className="text-sm font-medium text-foreground">
-                    {/* @ts-ignore */}
-                    Color: {selectedVariant?.color_name}
+                    Color: {(selectedVariant as any)?.color_name}
                   </label>
                   <div className="flex flex-wrap gap-3">
                     {product!.product_variants.map((variant: any) => (
@@ -225,16 +220,14 @@ const ProductDetail = () => {
                         }}
                         className={cn(
                           "relative w-10 h-10 rounded-full border-2 transition-all",
-                          // @ts-ignore
-                          variant._id === selectedVariant?._id
+                          (variant as any)._id === (selectedVariant as any)?._id
                             ? "border-primary ring-2 ring-primary/20"
                             : "border-border hover:border-primary/50"
                         )}
                         style={{ backgroundColor: variant.color_hex || "#ccc" }}
                         title={variant.color_name}
                       >
-                         {/* @ts-ignore */}
-                        {variant._id === selectedVariant?._id && (
+                        {(variant as any)._id === (selectedVariant as any)?._id && (
                           <Check className="absolute inset-0 m-auto h-5 w-5 text-primary-foreground drop-shadow" />
                         )}
                       </button>
@@ -369,7 +362,6 @@ const ProductDetail = () => {
             </h2>
             <div className="max-w-2xl">
               <InquiryForm
-                // @ts-ignore
                 preselectedProductId={product!._id}
                 preselectedProductName={product!.name}
               />
@@ -398,8 +390,7 @@ const ProductDetail = () => {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              // @ts-ignore
-              src={images[selectedImageIndex].url}
+              src={(images[selectedImageIndex] as any).url}
               alt={product!.name}
               className="max-w-full max-h-[90vh] object-contain rounded-lg"
               onClick={(e) => e.stopPropagation()}

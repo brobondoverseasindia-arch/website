@@ -37,7 +37,6 @@ import { Id } from "../../../convex/_generated/dataModel";
 
 const AdminCategories = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // @ts-ignore
   const [editingCategory, setEditingCategory] = useState<any | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -49,8 +48,7 @@ const AdminCategories = () => {
   const categories = useQuery(api.categories.getCategories);
   const isLoading = categories === undefined;
 
-  // @ts-ignore
-  const parentCategories = categories?.filter((c) => !c.parent_id) || [];
+  const parentCategories = categories ? categories.filter((c) => !c.parent_id) : [];
 
   const createCategory = useMutation(api.categories.createCategory);
   const updateCategory = useMutation(api.categories.updateCategory);
@@ -77,7 +75,6 @@ const AdminCategories = () => {
     const categoryData = {
       name: formData.name,
       slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
-      // @ts-ignore
       parent_id: formData.parent_id ? (formData.parent_id as Id<"categories">) : undefined,
       is_active: formData.is_active,
     };
@@ -118,16 +115,13 @@ const AdminCategories = () => {
     if (!categories) return [];
     const tree: any[] = [];
     
-    // @ts-ignore
     parentCategories.forEach((parent) => {
-      // @ts-ignore
       const children = categories.filter((c) => c.parent_id === parent._id);
       tree.push({ ...parent, children });
     });
 
     // Add orphan categories
     const orphans = categories.filter(
-      // @ts-ignore
       (c) => c.parent_id && !categories.find((p) => p._id === c.parent_id)
     );
     orphans.forEach((orphan) => {
@@ -191,9 +185,7 @@ const AdminCategories = () => {
                     <SelectContent>
                       <SelectItem value="__none__">None (Top Level)</SelectItem>
                       {parentCategories
-                        // @ts-ignore
                         .filter((cat) => cat._id !== editingCategory?._id)
-                        // @ts-ignore
                         .map((cat) => (
                           <SelectItem key={cat._id} value={cat._id}>{cat.name}</SelectItem>
                         ))}

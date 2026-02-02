@@ -28,7 +28,9 @@ const Products = () => {
   // Fetch categories
   const categoriesRaw = useQuery(api.categories.getCategories);
   const categories = useMemo(() => 
-    categoriesRaw?.filter((c: any) => c.is_active).sort((a: any, b: any) => a.name.localeCompare(b.name))
+    categoriesRaw 
+      ? categoriesRaw.filter((c: any) => c.is_active).sort((a: any, b: any) => a.name.localeCompare(b.name))
+      : []
   , [categoriesRaw]);
 
   // Fetch products
@@ -39,9 +41,7 @@ const Products = () => {
   const { parentCategories, subcategories } = useMemo(() => {
     if (!categories) return { parentCategories: [], subcategories: [] };
     
-    // @ts-ignore
     const parents = categories.filter((c) => !c.parent_id);
-    // @ts-ignore
     const subs = categories.filter((c) => c.parent_id);
     
     return { parentCategories: parents, subcategories: subs };
@@ -50,10 +50,8 @@ const Products = () => {
   // Filter subcategories based on selected parent
   const filteredSubcategories = useMemo(() => {
     if (!selectedCategory) return [];
-    // @ts-ignore
     return subcategories.filter((s) => s.parent_id === selectedCategory);
   }, [selectedCategory, subcategories]);
-
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -73,15 +71,11 @@ const Products = () => {
 
     // Category filter
     if (selectedSubcategory) {
-      // @ts-ignore
       filtered = filtered.filter((p: any) => p.category_id === selectedSubcategory);
     } else if (selectedCategory) {
       const subIds = subcategories
-        // @ts-ignore
         .filter((s) => s.parent_id === selectedCategory)
-        // @ts-ignore
         .map((s) => s._id); // Using _id for Convex
-      // @ts-ignore
       filtered = filtered.filter(
         (p: any) => p.category_id === selectedCategory || subIds.includes(p.category_id || "")
       );
@@ -326,7 +320,6 @@ const Products = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                       >
-                         {/* @ts-ignore */}
                         <ProductCard product={{...product, id: product._id}} />
                       </motion.div>
                     ))}

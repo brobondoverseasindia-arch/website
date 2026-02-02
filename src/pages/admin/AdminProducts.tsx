@@ -39,7 +39,6 @@ import { Id } from "../../../convex/_generated/dataModel";
 const AdminProducts = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  // @ts-ignore
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   // Store storageIds for new uploads, or URLs for preview
@@ -60,10 +59,8 @@ const AdminProducts = () => {
   });
 
   const products = useQuery(api.products.getAllProducts);
-  // @ts-ignore
   const categoriesRaw = useQuery(api.categories.getCategories);
-  // @ts-ignore
-  const categories = categoriesRaw?.sort((a, b) => a.name.localeCompare(b.name));
+  const categories = categoriesRaw ? [...categoriesRaw].sort((a, b) => a.name.localeCompare(b.name)) : undefined;
   
   const isLoading = products === undefined;
 
@@ -171,7 +168,6 @@ const AdminProducts = () => {
     if (!newCategoryName.trim()) return;
     try {
       const slug = newCategoryName.toLowerCase().replace(/\s+/g, "-");
-      // @ts-ignore
       const newId = await createCategory({
         name: newCategoryName,
         slug,
@@ -193,7 +189,6 @@ const AdminProducts = () => {
       slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
       short_description: formData.short_description || undefined,
       full_description: formData.full_description || undefined,
-      // @ts-ignore
       category_id: formData.category_id ? (formData.category_id as Id<"categories">) : undefined,
       featured: formData.featured,
       is_active: formData.is_active,
@@ -210,7 +205,6 @@ const AdminProducts = () => {
         await updateProduct({ id: productId, ...productData });
         toast.success("Product updated successfully");
       } else {
-        // @ts-ignore
         productId = await createProduct(productData);
         toast.success("Product created successfully");
       }
@@ -275,9 +269,8 @@ const AdminProducts = () => {
     return null;
   };
 
-  // @ts-ignore
   const filteredProducts = products?.filter(
-    (p: any) =>
+    (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.slug.toLowerCase().includes(search.toLowerCase())
   );

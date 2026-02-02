@@ -42,7 +42,6 @@ const statusOptions = [
 const AdminInquiries = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  // @ts-ignore
   const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
 
   const inquiries = useQuery(api.inquiries.getInquiries);

@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as categories from "../categories.js";
 import type * as dashboard from "../dashboard.js";
 import type * as inquiries from "../inquiries.js";
+import type * as permissions from "../permissions.js";
 import type * as products from "../products.js";
 
 import type {
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   categories: typeof categories;
   dashboard: typeof dashboard;
   inquiries: typeof inquiries;
+  permissions: typeof permissions;
   products: typeof products;
 }>;
 

@@ -44,10 +44,10 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
 
   const productsRaw = useQuery(api.products.getProducts);
   const products = productsRaw
-    // @ts-ignore
-    ?.filter((p) => p.is_active)
-    // @ts-ignore
-    .sort((a, b) => a.name.localeCompare(b.name));
+    ? productsRaw
+        .filter((p) => p.is_active)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    : undefined;
 
   const {
     register,
@@ -68,8 +68,7 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
   const onSubmit = async (data: InquiryFormData) => {
     try {
       const productName = data.productId
-        // @ts-ignore
-        ? products?.find((p) => p._id === data.productId)?.name || preselectedProductName
+        ? products?.find((p) => String(p._id) === data.productId)?.name || preselectedProductName
         : preselectedProductName;
 
       await createInquiry({
