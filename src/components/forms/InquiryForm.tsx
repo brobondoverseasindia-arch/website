@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { COMPANY } from "@/lib/constants";
 
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -82,9 +83,25 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
         message: data.message,
       });
 
+      // Redirect to WhatsApp
+      const whatsappNumber = COMPANY.whatsapp.replace(/\D/g, ""); // Remove non-digits
+      const messageText = `*New Inquiry via Website*
+      
+*Name:* ${data.name}
+${data.company ? `*Company:* ${data.company}` : ""}
+${productName ? `*Product:* ${productName}` : ""}
+*Email:* ${data.email}
+${data.phone ? `*Phone:* ${data.phone}` : ""}
+
+*Message:*
+${data.message}`;
+
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
+      window.open(whatsappUrl, "_blank");
+
       setSubmitted(true);
       reset();
-      toast.success("Inquiry submitted successfully!");
+      toast.success("Inquiry submitted successfully! Redirecting to WhatsApp...");
     } catch (error) {
       toast.error("Failed to submit inquiry. Please try again.");
     }
