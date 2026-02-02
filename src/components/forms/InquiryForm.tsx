@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { COMPANY } from "@/lib/constants";
 
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -43,10 +44,10 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
 
   const productsRaw = useQuery(api.products.getProducts);
   const products = productsRaw
-    // @ts-ignore
-    ?.filter((p) => p.is_active)
-    // @ts-ignore
-    .sort((a, b) => a.name.localeCompare(b.name));
+    ? productsRaw
+        .filter((p) => p.is_active)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    : undefined;
 
   const {
     register,
@@ -54,7 +55,7 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
     setValue,
     watch,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<InquiryFormData>({
     resolver: zodResolver(inquirySchema),
     defaultValues: {
@@ -67,8 +68,7 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
   const onSubmit = async (data: InquiryFormData) => {
     try {
       const productName = data.productId
-        // @ts-ignore
-        ? products?.find((p) => p._id === data.productId)?.name || preselectedProductName
+        ? products?.find((p) => String(p._id) === data.productId)?.name || preselectedProductName
         : preselectedProductName;
 
       await createInquiry({
@@ -82,9 +82,28 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
         message: data.message,
       });
 
+      // Redirect to WhatsApp
+      const whatsappNumber = COMPANY.whatsapp.replace(/\D/g, ""); // Remove non-digits
+      const messageLines = [
+        "*New Inquiry via Website*",
+        "",
+        `*Name:* ${data.name}`,
+        data.company && `*Company:* ${data.company}`,
+        productName && `*Product:* ${productName}`,
+        `*Email:* ${data.email}`,
+        data.phone && `*Phone:* ${data.phone}`,
+        "",
+        "*Message:*",
+        data.message,
+      ].filter(Boolean);
+      const messageText = messageLines.join("\n");
+
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
+      window.open(whatsappUrl, "_blank");
+
       setSubmitted(true);
       reset();
-      toast.success("Inquiry submitted successfully!");
+      toast.success("Inquiry submitted successfully! Redirecting to WhatsApp...");
     } catch (error) {
       toast.error("Failed to submit inquiry. Please try again.");
     }
@@ -215,15 +234,19 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
         type="submit"
         size="lg"
         className="w-full"
-        // Disabled logic for Convex mutation pending state is different.
-        // useMutation doesn't provide isPending directly in the returned function, 
-        // unlike TanStack Query's useMutation object.
-        // We can manage loading state manually or use the `useMutation` hook from `convex/react` 
-        // which returns `[mutate, { loading, ... }]`? No, Convex `useMutation` returns just the mutate function.
-        // We have to manage loading state manually if we want to show spinner.
+        disabled={isSubmitting}
       >
-        <Send className="h-4 w-4 mr-2" />
-        Submit Inquiry
+        {isSubmitting ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Submit Inquiry
+          </>
+        )}
       </Button>
     </form>
   );

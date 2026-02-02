@@ -87,7 +87,7 @@ export function FeaturedProductsSection() {
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 }}
               >
                 <SpotlightCard className="h-full">
-                  {/* @ts-ignore - IDs mismatch between string and Convex ID but work at runtime */}
+                  {/* @ts-expect-error - IDs mismatch between string and Convex ID but work at runtime */}
                   <ProductCard product={{...product, id: product._id}} variant="dark" className="border-0 bg-transparent shadow-none" />
                 </SpotlightCard>
               </motion.div>

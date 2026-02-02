@@ -31,7 +31,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, Search, Loader2, Upload, X, Image } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Loader2, Upload, X, Image, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -39,11 +39,12 @@ import { Id } from "../../../convex/_generated/dataModel";
 const AdminProducts = () => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  // @ts-ignore
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   // Store storageIds for new uploads, or URLs for preview
   const [productImages, setProductImages] = useState<{ url: string; storageId?: string }[]>([]);
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -58,14 +59,13 @@ const AdminProducts = () => {
   });
 
   const products = useQuery(api.products.getAllProducts);
-  // @ts-ignore
   const categoriesRaw = useQuery(api.categories.getCategories);
-  // @ts-ignore
-  const categories = categoriesRaw?.sort((a, b) => a.name.localeCompare(b.name));
+  const categories = categoriesRaw ? [...categoriesRaw].sort((a, b) => a.name.localeCompare(b.name)) : undefined;
   
   const isLoading = products === undefined;
 
   const createProduct = useMutation(api.products.createProduct);
+  const createCategory = useMutation(api.categories.createCategory);
   const updateProduct = useMutation(api.products.updateProduct);
   const deleteProductMutation = useMutation(api.products.deleteProduct);
   const createVariant = useMutation(api.products.createVariant);
@@ -164,6 +164,24 @@ const AdminProducts = () => {
     setDialogOpen(true);
   };
 
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    try {
+      const slug = newCategoryName.toLowerCase().replace(/\s+/g, "-");
+      const newId = await createCategory({
+        name: newCategoryName,
+        slug,
+        is_active: true
+      });
+      setFormData(prev => ({ ...prev, category_id: newId }));
+      setIsCreatingCategory(false);
+      setNewCategoryName("");
+      toast.success("Category created!");
+    } catch (error: any) {
+      toast.error("Failed to create category: " + error.message);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const productData = {
@@ -171,7 +189,6 @@ const AdminProducts = () => {
       slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
       short_description: formData.short_description || undefined,
       full_description: formData.full_description || undefined,
-      // @ts-ignore
       category_id: formData.category_id ? (formData.category_id as Id<"categories">) : undefined,
       featured: formData.featured,
       is_active: formData.is_active,
@@ -188,7 +205,6 @@ const AdminProducts = () => {
         await updateProduct({ id: productId, ...productData });
         toast.success("Product updated successfully");
       } else {
-        // @ts-ignore
         productId = await createProduct(productData);
         toast.success("Product created successfully");
       }
@@ -253,9 +269,8 @@ const AdminProducts = () => {
     return null;
   };
 
-  // @ts-ignore
   const filteredProducts = products?.filter(
-    (p: any) =>
+    (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.slug.toLowerCase().includes(search.toLowerCase())
   );
@@ -303,20 +318,55 @@ const AdminProducts = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
-                  <Select
-                    value={formData.category_id || "__none__"}
-                    onValueChange={(value) => setFormData({ ...formData, category_id: value === "__none__" ? "" : value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="__none__">No Category</SelectItem>
-                      {categories?.map((cat: any) => (
-                        <SelectItem key={cat._id} value={cat._id}>{cat.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {isCreatingCategory ? (
+                    <div className="flex gap-2 items-center">
+                      <Input 
+                        placeholder="New Category Name" 
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleCreateCategory();
+                          } else if (e.key === "Escape") {
+                            setIsCreatingCategory(false);
+                          }
+                        }}
+                        className="flex-1"
+                      />
+                      <Button type="button" size="icon" onClick={handleCreateCategory}>
+                        <Check className="h-4 w-4" />
+                      </Button>
+                      <Button type="button" size="icon" variant="ghost" onClick={() => setIsCreatingCategory(false)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={formData.category_id || "__none__"}
+                      onValueChange={(value) => {
+                        if (value === "__new__") {
+                            setIsCreatingCategory(true);
+                        } else {
+                            setFormData({ ...formData, category_id: value === "__none__" ? "" : value });
+                        }
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none__">No Category</SelectItem>
+                        {categories?.map((cat: any) => (
+                          <SelectItem key={cat._id} value={cat._id}>{cat.name}</SelectItem>
+                        ))}
+                        <SelectItem value="__new__" className="text-primary font-medium focus:bg-primary/10">
+                           + Create New Category
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
 
                 {/* Image Upload Section */}
