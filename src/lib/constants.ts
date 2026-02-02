@@ -6,7 +6,7 @@ export const COMPANY = {
   description: "Leading manufacturer and merchant exporter of premium industrial gloves and safety products from Kolkata, India.",
   phone: "+91 33 2234 5678",
   email: "export@brobondoverseas.com",
-  whatsapp: "+91 63902992",
+  whatsapp: "+91 79808 07953",
   address: {
     street: "123 Industrial Park, Sector V",
     city: "Kolkata",

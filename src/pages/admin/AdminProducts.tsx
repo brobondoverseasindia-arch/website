@@ -177,7 +177,7 @@ const AdminProducts = () => {
         slug,
         is_active: true
       });
-      setFormData({ ...formData, category_id: newId });
+      setFormData(prev => ({ ...prev, category_id: newId }));
       setIsCreatingCategory(false);
       setNewCategoryName("");
       toast.success("Category created!");
@@ -331,6 +331,15 @@ const AdminProducts = () => {
                         placeholder="New Category Name" 
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleCreateCategory();
+                          } else if (e.key === "Escape") {
+                            setIsCreatingCategory(false);
+                          }
+                        }}
                         className="flex-1"
                       />
                       <Button type="button" size="icon" onClick={handleCreateCategory}>

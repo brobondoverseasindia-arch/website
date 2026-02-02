@@ -55,7 +55,7 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
     setValue,
     watch,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<InquiryFormData>({
     resolver: zodResolver(inquirySchema),
     defaultValues: {
@@ -85,16 +85,19 @@ export function InquiryForm({ preselectedProductId, preselectedProductName }: In
 
       // Redirect to WhatsApp
       const whatsappNumber = COMPANY.whatsapp.replace(/\D/g, ""); // Remove non-digits
-      const messageText = `*New Inquiry via Website*
-      
-*Name:* ${data.name}
-${data.company ? `*Company:* ${data.company}` : ""}
-${productName ? `*Product:* ${productName}` : ""}
-*Email:* ${data.email}
-${data.phone ? `*Phone:* ${data.phone}` : ""}
-
-*Message:*
-${data.message}`;
+      const messageLines = [
+        "*New Inquiry via Website*",
+        "",
+        `*Name:* ${data.name}`,
+        data.company && `*Company:* ${data.company}`,
+        productName && `*Product:* ${productName}`,
+        `*Email:* ${data.email}`,
+        data.phone && `*Phone:* ${data.phone}`,
+        "",
+        "*Message:*",
+        data.message,
+      ].filter(Boolean);
+      const messageText = messageLines.join("\n");
 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(messageText)}`;
       window.open(whatsappUrl, "_blank");
@@ -232,15 +235,19 @@ ${data.message}`;
         type="submit"
         size="lg"
         className="w-full"
-        // Disabled logic for Convex mutation pending state is different.
-        // useMutation doesn't provide isPending directly in the returned function, 
-        // unlike TanStack Query's useMutation object.
-        // We can manage loading state manually or use the `useMutation` hook from `convex/react` 
-        // which returns `[mutate, { loading, ... }]`? No, Convex `useMutation` returns just the mutate function.
-        // We have to manage loading state manually if we want to show spinner.
+        disabled={isSubmitting}
       >
-        <Send className="h-4 w-4 mr-2" />
-        Submit Inquiry
+        {isSubmitting ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Submit Inquiry
+          </>
+        )}
       </Button>
     </form>
   );

@@ -18,6 +18,9 @@ export const login = mutation({
   args: { password: v.string() },
   handler: async (ctx, args) => {
     const adminPassword = process.env.admin_password;
+    if (!adminPassword) {
+      throw new Error("admin_password environment variable is not set");
+    }
     // Fallback or simple check. 
     // If env var is not set (local dev without config), this might fail.
     // Use `admin_password` from env.
