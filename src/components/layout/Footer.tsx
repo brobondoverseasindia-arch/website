@@ -6,147 +6,100 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="section-dark noise-overlay relative">
-      <div className="container-wide section-padding relative z-10">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+    <footer className="bg-[#212529] mt-auto">
+      <div className="container-wide py-12 md:py-16 lg:py-20 relative z-10">
+        <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
-          <div className="space-y-5">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg gradient-purple">
-                <span className="text-lg font-bold text-primary-foreground">B</span>
+          <div className="space-y-5 sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E0323C] text-white shadow-lg flex-shrink-0">
+                <span className="text-xl font-black font-heading">B</span>
               </div>
-              <span className="text-xl font-bold text-white">{COMPANY.name}</span>
+              <div>
+                <span className="text-lg font-heading font-black text-white block leading-tight">BROBOND</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-gray-500 font-sans">Overseas</span>
+              </div>
             </div>
-            <p className="text-sm text-white/60 leading-relaxed">
-              {COMPANY.description}
+            <p className="text-gray-400 leading-relaxed font-sans text-sm pr-4">
+              Premier manufacturer and exporter of industrial safety gloves, protective equipment, and specialized workwear for global B2B procurement.
             </p>
             <div className="flex gap-3">
-              <a
-                href={COMPANY.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-primary hover:bg-primary/10 hover:border-primary/30 transition-all"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href={COMPANY.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-primary hover:bg-primary/10 hover:border-primary/30 transition-all"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a
-                href={COMPANY.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-primary hover:bg-primary/10 hover:border-primary/30 transition-all"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
+              {[
+                { href: COMPANY.social.linkedin, icon: Linkedin, label: "LinkedIn" },
+                { href: COMPANY.social.twitter, icon: Twitter, label: "Twitter" },
+                { href: COMPANY.social.facebook, icon: Facebook, label: "Facebook" },
+              ].map(({ href, icon: Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#E0323C] hover:border-[#E0323C] transition-all"
+                  aria-label={label}
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-5">
-            <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+            <h3 className="text-sm font-heading font-bold text-white tracking-wider">Quick Links</h3>
             <ul className="space-y-3">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-white/60 hover:text-primary transition-colors"
+                    className="text-sm text-gray-400 hover:text-[#E0323C] transition-colors font-sans flex items-center gap-2 group"
                   >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-[#E0323C] transition-colors" />
                     {link.label}
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  to="/admin"
-                  className="text-sm text-white/60 hover:text-primary transition-colors"
-                >
-                  Admin Login
-                </Link>
-              </li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-5">
-            <h3 className="text-lg font-semibold text-white">Contact Us</h3>
+            <h3 className="text-sm font-heading font-bold text-white tracking-wider">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <MapPin className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-sm text-white/60 leading-relaxed">
+                <MapPin className="h-4 w-4 text-[#E0323C] mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-gray-400 leading-relaxed font-sans">
                   {COMPANY.address.street}<br />
                   {COMPANY.address.city}, {COMPANY.address.state}<br />
                   {COMPANY.address.country} - {COMPANY.address.zip}
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Phone className="h-4 w-4 text-primary" />
-                </div>
-                <a
-                  href={`tel:${COMPANY.phone}`}
-                  className="text-sm text-white/60 hover:text-primary transition-colors"
-                >
+                <Phone className="h-4 w-4 text-[#E0323C] flex-shrink-0" />
+                <a href={`tel:${COMPANY.phone}`} className="text-sm text-gray-400 hover:text-[#E0323C] transition-colors font-sans">
                   {COMPANY.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Mail className="h-4 w-4 text-primary" />
-                </div>
-                <a
-                  href={`mailto:${COMPANY.email}`}
-                  className="text-sm text-white/60 hover:text-primary transition-colors"
-                >
+                <Mail className="h-4 w-4 text-[#E0323C] flex-shrink-0" />
+                <a href={`mailto:${COMPANY.email}`} className="text-sm text-gray-400 hover:text-[#E0323C] transition-colors font-sans break-all">
                   {COMPANY.email}
                 </a>
               </li>
             </ul>
           </div>
-
-          {/* Export Ready */}
-          <div className="space-y-5">
-            <h3 className="text-lg font-semibold text-white">Export Ready</h3>
-            <p className="text-sm text-white/60 leading-relaxed">
-              We ship to 50+ countries worldwide with reliable logistics partners and export-ready documentation.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["USA", "EU", "UAE", "Australia", "Asia"].map((region) => (
-                <span
-                  key={region}
-                  className="px-3 py-1.5 text-xs font-medium bg-white/5 border border-white/10 rounded-full text-white/70"
-                >
-                  {region}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {/* Divider */}
-        <div className="divider-dark my-10" />
-
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-white/50">
-            © {currentYear} {COMPANY.name}. All rights reserved.
+        {/* Bottom */}
+        <div className="w-full h-px bg-white/10 my-8 md:my-10" />
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-gray-500 font-sans text-center sm:text-left">
+            © {currentYear} BroBond Overseas. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link to="/privacy" className="text-sm text-white/50 hover:text-primary transition-colors">
+            <Link to="/privacy" className="text-sm text-gray-500 hover:text-[#E0323C] transition-colors font-sans">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-sm text-white/50 hover:text-primary transition-colors">
+            <Link to="/terms" className="text-sm text-gray-500 hover:text-[#E0323C] transition-colors font-sans">
               Terms of Service
             </Link>
           </div>

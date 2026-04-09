@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { COMPANY } from "@/lib/constants";
-import { toast } from "sonner";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -29,30 +28,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("admin_authenticated") === "true";
-    if (!isAuthenticated) {
-      navigate("/admin");
-      return;
-    }
-    setIsLoading(false);
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("admin_authenticated");
-    navigate("/admin");
-    toast.success("Logged out successfully");
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-secondary/30">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-secondary/30">
@@ -67,9 +42,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           <span className="font-semibold text-foreground">{COMPANY.name} Admin</span>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="w-9" /> {/* Spacer to balance the layout */}
         </div>
       </header>
 
@@ -116,16 +89,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             })}
           </nav>
 
-          <div className="p-4 border-t border-border hidden lg:block">
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
-            </Button>
-          </div>
         </div>
       </aside>
 

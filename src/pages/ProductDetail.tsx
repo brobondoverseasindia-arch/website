@@ -25,7 +25,7 @@ const ProductDetail = () => {
 
   const product = useQuery(api.products.getProductBySlug, { slug: slug || "" });
   const isLoading = product === undefined;
-  
+
   // Select first variant by default
   const selectedVariant = useMemo(() => {
     if (!product || !product.product_variants || !product.product_variants.length) return null;
@@ -236,6 +236,105 @@ const ProductDetail = () => {
                 </div>
               )}
 
+              {/* Product Specifications & Details Tabs */}
+              <div className="pt-6 pb-6">
+                <Tabs defaultValue="overview" className="w-full">
+                  <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent mb-4 space-x-6 overflow-x-auto no-scrollbar">
+                    <TabsTrigger
+                      value="overview"
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
+                    >
+                      Overview
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="features"
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
+                    >
+                      Key Features
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="specifications"
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
+                    >
+                      Specifications
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="applications"
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
+                    >
+                      Applications
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="overview" className="mt-0">
+                    <div className="prose prose-slate max-w-none text-sm text-gray-600">
+                      {product!.full_description ? (
+                        <p className="whitespace-pre-wrap leading-relaxed">
+                          {product!.full_description}
+                        </p>
+                      ) : (
+                        <p className="leading-relaxed">{product!.short_description}</p>
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="features" className="mt-0">
+                    {product!.key_features && product!.key_features.length > 0 ? (
+                      <ul className="grid grid-cols-1 gap-2">
+                        {product!.key_features.map((feature: any, i: any) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                            <Check className="h-4 w-4 text-[#0F766E] mt-0.5 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No key features specified.</p>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="specifications" className="mt-0">
+                    {specifications.length > 0 ? (
+                      <div className="rounded-lg border border-gray-100 overflow-hidden text-sm">
+                        <table className="w-full">
+                          <tbody>
+                            {specifications.map((spec, i) => (
+                              <tr key={i} className={i % 2 === 0 ? "bg-gray-50/50" : ""}>
+                                <td className="px-3 py-2 font-medium text-gray-900 w-1/3 border-r border-gray-100">
+                                  {spec.label}
+                                </td>
+                                <td className="px-3 py-2 text-gray-600">
+                                  {spec.value}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No specifications available.</p>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="applications" className="mt-0">
+                    {product!.applications && product!.applications.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {product!.applications.map((app: any, i: any) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm font-medium border border-gray-200"
+                          >
+                            {app}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No applications specified.</p>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </div>
+
               {/* CTA */}
               <div className="pt-4">
                 <Button asChild size="lg" className="w-full sm:w-auto">
@@ -245,122 +344,20 @@ const ProductDetail = () => {
             </motion.div>
           </div>
 
-          {/* Tabs Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-16"
-          >
-            <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
-                <TabsTrigger
-                  value="overview"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Overview
-                </TabsTrigger>
-                <TabsTrigger
-                  value="features"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Key Features
-                </TabsTrigger>
-                <TabsTrigger
-                  value="specifications"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Specifications
-                </TabsTrigger>
-                <TabsTrigger
-                  value="applications"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Applications
-                </TabsTrigger>
-              </TabsList>
 
-              <TabsContent value="overview" className="pt-6">
-                <div className="prose prose-slate max-w-none">
-                  {product!.full_description ? (
-                    <p className="text-muted-foreground whitespace-pre-wrap">
-                      {product!.full_description}
-                    </p>
-                  ) : (
-                    <p className="text-muted-foreground">{product!.short_description}</p>
-                  )}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="features" className="pt-6">
-                {product!.key_features && product!.key_features.length > 0 ? (
-                  <ul className="space-y-3">
-                    {product!.key_features.map((feature: any, i: any) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-muted-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">No key features specified.</p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="specifications" className="pt-6">
-                {specifications.length > 0 ? (
-                  <div className="rounded-lg border border-border overflow-hidden">
-                    <table className="w-full">
-                      <tbody>
-                        {specifications.map((spec, i) => (
-                          <tr key={i} className={i % 2 === 0 ? "bg-secondary/30" : ""}>
-                            <td className="px-4 py-3 font-medium text-foreground w-1/3">
-                              {spec.label}
-                            </td>
-                            <td className="px-4 py-3 text-muted-foreground">
-                              {spec.value}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground">No specifications available.</p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="applications" className="pt-6">
-                {product!.applications && product!.applications.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {product!.applications.map((app: any, i: any) => (
-                      <span
-                        key={i}
-                        className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg"
-                      >
-                        {app}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground">No applications specified.</p>
-                )}
-              </TabsContent>
-            </Tabs>
-          </motion.div>
 
           {/* Request Quote Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-16"
+            className="mt-16 text-center"
             id="request-quote"
           >
             <h2 className="text-2xl font-bold text-foreground mb-6">
               Request a Quote for {product!.name}
             </h2>
-            <div className="max-w-2xl">
+            <div className="max-w-2xl mx-auto text-left">
               <InquiryForm
                 preselectedProductId={product!._id}
                 preselectedProductName={product!.name}

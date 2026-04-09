@@ -4,8 +4,8 @@ export const COMPANY = {
   name: "BroBond Overseas",
   tagline: "Premium Industrial Gloves. Global Supply. Export-Ready Quality.",
   description: "Leading manufacturer and merchant exporter of premium industrial gloves and safety products from Kolkata, India.",
-  phone: "+91 33 2234 5678",
-  email: "export@brobondoverseas.com",
+  phone: "+91 7980807953",
+  email: "info@brobondoverseas.com",
   whatsapp: "+91 7980807953",
   address: {
     street: "123 Industrial Park, Sector V",
@@ -15,9 +15,9 @@ export const COMPANY = {
     zip: "700091"
   },
   social: {
-    linkedin: "https://linkedin.com/company/brobond-overseas",
-    twitter: "https://twitter.com/brobondoverseas",
-    facebook: "https://facebook.com/brobondoverseas"
+    linkedin: "https://linkedin.com/",
+    twitter: "https://twitter.com/",
+    facebook: "https://facebook.com/"
   }
 } as const;
 
@@ -30,7 +30,7 @@ export const NAV_LINKS = [
 
 export const TRUST_BADGES = [
   { label: "Manufacturer", icon: "Factory" },
-  { label: "Merchant Exporter", icon: "Globe" },
+  { label: "Exporter", icon: "Globe" },
   { label: "Worldwide Shipping", icon: "Truck" },
 ] as const;
 
@@ -42,7 +42,7 @@ export const QUICK_HIGHLIGHTS = [
   },
   {
     title: "Global Export Network",
-    description: "Shipping to 50+ countries with reliable logistics partners.",
+    description: "Shipping to 15+ countries with reliable logistics partners.",
     icon: "Globe",
   },
   {
@@ -103,7 +103,7 @@ export const TESTIMONIALS = [
     company: "SafetyFirst Distribution",
     country: "USA",
     content: "We've been importing from BroBond for 3 years. Their attention to packaging and timely delivery sets them apart from other suppliers.",
-    rating: 5,
+    rating: 4,
   },
   {
     name: "Ahmed Al-Rashid",
@@ -123,14 +123,14 @@ export const TESTIMONIALS = [
 
 export const FOUNDERS = [
   {
-    name: "Rajesh Sharma",
+    name: "Laltu Mondal",
     role: "Co-Founder & Managing Director",
     bio: "With over 25 years in industrial safety manufacturing, Rajesh leads our production and quality initiatives. His vision has transformed BroBond into a global export powerhouse.",
     image: "/placeholder.svg",
     linkedin: "https://linkedin.com/in/rajeshsharma"
   },
   {
-    name: "Priya Banerjee",
+    name: "Laltu Mondal",
     role: "Co-Founder & Director of International Sales",
     bio: "Priya brings 20 years of experience in international trade and export management. She has built our global network spanning 50+ countries.",
     image: "/placeholder.svg",

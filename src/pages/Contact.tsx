@@ -39,8 +39,8 @@ const Contact = () => {
                   Get In Touch
                 </h2>
                 <p className="text-muted-foreground mb-8">
-                  Whether you're looking for product information, pricing, or want to discuss 
-                  bulk orders, our export team is ready to assist you. We typically respond 
+                  Whether you're looking for product information, pricing, or want to discuss
+                  bulk orders, our export team is ready to assist you. We typically respond
                   within 24 business hours.
                 </p>
               </div>
@@ -118,7 +118,7 @@ const Contact = () => {
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.0931839455726!2d88.4295!3d22.5726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDM0JzIxLjQiTiA4OMKwMjUnNDYuMiJF!5e0!3m2!1sen!2sin!4v1234567890"
                   width="100%"
                   height="100%"
-                  style={{ border: 0 }}
+                  style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(80%)' }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

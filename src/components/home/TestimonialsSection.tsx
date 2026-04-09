@@ -1,133 +1,145 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SectionHeader } from "@/components/ui/section-header";
-import { TESTIMONIALS } from "@/lib/constants";
+
+const TESTIMONIALS = [
+  {
+    content: "BroBond Overseas has been our go-to supplier for industrial safety gear for over 5 years. Their bulk manufacturing capabilities and adherence to European safety standards are unmatched.",
+    name: "Marcus Bergstrom",
+    company: "Nordic Industrial Procurement",
+    country: "Sweden",
+    rating: 5,
+  },
+  {
+    content: "The custom protective aprons they manufactured for our chemical plants have significantly reduced workplace incidents. Excellent quality & competitive pricing.",
+    name: "Elena Rodriguez",
+    company: "Global ChemCorp",
+    country: "Spain",
+    rating: 5,
+  },
+  {
+    content: "We procure thousands of safety gloves quarterly from BroBond Overseas. Their consistent quality control and prompt global shipping make them a valuable tier-1 supply partner.",
+    name: "James Chen",
+    company: "Pacific Manufacturing Solutions",
+    country: "Singapore",
+    rating: 5,
+  }
+];
 
 export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Auto-rotate every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-    }, 3000);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
-  const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  };
-
-  const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  };
+  const next = () => setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+  const prev = () => setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
 
   const testimonial = TESTIMONIALS[currentIndex];
 
   return (
-    <section className="section-padding bg-background relative overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-      </div>
-      
+    <section className="py-16 md:py-24 bg-white relative overflow-hidden">
+      {/* Decorative */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-red-50 rounded-full blur-3xl opacity-40 pointer-events-none" />
+
       <div className="container-wide relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          className="text-center mb-10 md:mb-14"
         >
-          <SectionHeader
-            title="Trusted by Global Partners"
-            subtitle="See what our international customers say about their experience with BroBond Overseas."
-          />
+          <span className="inline-block bg-red-50 text-[#E0323C] text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+            Testimonials
+          </span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-black text-[#212529] mb-3">
+            Client <span className="text-[#E0323C]">Reviews</span>
+          </h2>
+          <p className="text-[#6F7183] max-w-lg mx-auto text-sm sm:text-base font-sans">
+            Trusted by procurement teams worldwide
+          </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="card-elevated p-8 md:p-12 text-center relative overflow-hidden"
-              >
-                {/* Decorative quote */}
-                <div className="absolute top-6 left-6 opacity-10">
-                  <Quote className="h-16 w-16 text-primary" />
-                </div>
-                
-                {/* Stars */}
-                <div className="flex justify-center gap-1 mb-8">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <Star className="h-5 w-5 fill-primary text-primary" />
-                    </motion.div>
-                  ))}
-                </div>
+        <div className="max-w-3xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="bg-white p-6 sm:p-8 md:p-10 lg:p-14 text-center rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 relative overflow-hidden"
+            >
+              {/* Quote Icon */}
+              <div className="absolute top-4 left-6 sm:top-6 sm:left-8 opacity-[0.06]">
+                <Quote className="h-20 w-20 sm:h-28 sm:w-28 text-[#E0323C]" />
+              </div>
 
-                {/* Content */}
-                <p className="text-lg md:text-xl text-foreground/80 mb-8 leading-relaxed max-w-2xl mx-auto">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Divider */}
-                <div className="divider max-w-32 mx-auto mb-6" />
-
-                {/* Author */}
-                <div>
-                  <p className="font-semibold text-foreground text-lg">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.company} • {testimonial.country}
-                  </p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Navigation */}
-            <div className="flex justify-center items-center gap-6 mt-8">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={prev}
-                className="rounded-full border-border text-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              
-              <div className="flex items-center gap-2">
-                {TESTIMONIALS.map((_, i) => (
-                  <button
+              {/* Stars */}
+              <div className="flex justify-center gap-1.5 mb-6 sm:mb-8 relative z-10">
+                {Array.from({ length: testimonial.rating }).map((_, i) => (
+                  <motion.div
                     key={i}
-                    onClick={() => setCurrentIndex(i)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                      i === currentIndex
-                        ? "bg-primary w-8"
-                        : "bg-foreground/20 hover:bg-foreground/40"
-                    }`}
-                    aria-label={`Go to testimonial ${i + 1}`}
-                  />
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.08 }}
+                  >
+                    <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-amber-400 text-amber-400" />
+                  </motion.div>
                 ))}
               </div>
-              
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={next}
-                className="rounded-full border-border text-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
+
+              {/* Content */}
+              <p className="text-base sm:text-lg md:text-xl text-[#212529] mb-8 sm:mb-10 leading-relaxed max-w-2xl mx-auto italic font-sans relative z-10">
+                "{testimonial.content}"
+              </p>
+
+              {/* Divider */}
+              <div className="w-12 h-1 bg-[#E0323C] mx-auto mb-4 sm:mb-6 rounded-full" />
+
+              {/* Author */}
+              <div className="relative z-10">
+                <p className="font-heading font-bold text-[#212529] text-base sm:text-lg">{testimonial.name}</p>
+                <p className="text-xs sm:text-sm text-[#6F7183] font-sans mt-1">
+                  <span className="text-[#E0323C] font-medium">{testimonial.company}</span> • {testimonial.country}
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation */}
+          <div className="flex justify-center items-center gap-4 sm:gap-6 mt-8 sm:mt-10">
+            <button
+              onClick={prev}
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white rounded-full text-[#212529] hover:bg-[#E0323C] hover:text-white shadow-lg border border-gray-100 hover:border-[#E0323C] transition-all"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center gap-2 sm:gap-3">
+              {TESTIMONIALS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`rounded-full transition-all duration-300 ${i === currentIndex ? "w-6 sm:w-8 h-2.5 sm:h-3 bg-[#E0323C]" : "w-2.5 sm:w-3 h-2.5 sm:h-3 bg-gray-200 hover:bg-gray-300"
+                    }`}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                />
+              ))}
             </div>
+
+            <button
+              onClick={next}
+              className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white rounded-full text-[#212529] hover:bg-[#E0323C] hover:text-white shadow-lg border border-gray-100 hover:border-[#E0323C] transition-all"
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </div>

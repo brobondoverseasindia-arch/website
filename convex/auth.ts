@@ -13,17 +13,16 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   })],
 });
 
-// Simple Admin Login support using Environment Variable
+// Simple Admin Login support using Hardcoded Password
 export const login = mutation({
   args: { password: v.string() },
   handler: async (ctx, args) => {
-    const adminPassword = process.env.admin_password;
+    // Password for admin access from environment variables
+    const adminPassword = process.env.ADMIN_PASSWORD;
     if (!adminPassword) {
-      throw new Error("admin_password environment variable is not set");
+      console.error("ADMIN_PASSWORD environment variable is not set.");
+      return false;
     }
-    // Fallback or simple check. 
-    // If env var is not set (local dev without config), this might fail.
-    // Use `admin_password` from env.
     return args.password === adminPassword;
   },
 });
@@ -34,4 +33,3 @@ export const initAuth = mutation({
     return "Initialized"; 
   },
 });
-

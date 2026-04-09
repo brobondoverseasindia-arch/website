@@ -1,290 +1,225 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Factory, Globe, Truck, Shield, Award, Package } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { COMPANY, TRUST_BADGES } from "@/lib/constants";
 
-const iconMap = {
-  Factory,
-  Globe,
-  Truck,
-  Shield,
-  Award,
-  Package,
-};
-
-const STATS = [
-  { value: "15+", label: "Years Experience" },
-  { value: "50+", label: "Countries Served" },
-  { value: "500K+", label: "Units Monthly" },
-  { value: "100%", label: "Export Ready" },
+const SLIDES = [
+  {
+    id: 1,
+    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=2000",
+    subtitle: "Trusted by 500+ Global Clients",
+    headline: "Premium Industrial",
+    headlineAccent: "Safety Gloves",
+    description: "Manufactured with precision for maximum protection. Exported to 50+ countries with ISO-certified quality assurance.",
+  },
+  {
+    id: 2,
+    image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&q=80&w=2000",
+    subtitle: "State-of-the-Art Manufacturing",
+    headline: "Precision",
+    headlineAccent: "At Scale",
+    description: "10M+ gloves produced annually in our modern facility with stringent multi-stage quality checks.",
+  },
+  {
+    id: 3,
+    image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&q=80&w=2000",
+    subtitle: "Export Excellence Since 2010",
+    headline: "Global Export",
+    headlineAccent: "Standards",
+    description: "Trusted by procurement teams worldwide for reliable bulk supply, custom branding, and on-time delivery.",
+  },
 ];
 
-const AnimatedCounter = ({ value, duration = 2.5 }: { value: string; duration?: number }) => {
-  const numericValue = parseInt(value.replace(/\D/g, ""));
-  const suffix = value.replace(/[0-9]/g, "");
-  
-  return (
-    <motion.span
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      className="inline-flex"
-    >
-      <motion.span
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-      >
-        <CountUp end={numericValue} duration={duration} suffix={suffix} />
-      </motion.span>
-    </motion.span>
-  );
-};
-
-const CountUp = ({ end, duration, suffix }: { end: number; duration: number; suffix: string }) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      const percentage = Math.min(progress / (duration * 1000), 1);
-      
-      // Easing function for smooth deceleration (Apple-like easeOutQuart)
-      const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
-      
-      setCount(Math.floor(easeOutQuart * end));
-
-      if (progress < duration * 1000) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [end, duration]);
-
-  return <>{count}{suffix}</>;
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+    opacity: 1,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? "-100%" : "100%",
+    opacity: 1,
+  }),
 };
 
 export function HeroSection() {
+  const [[currentSlide, direction], setSlide] = useState([0, 0]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setSlide(([prev]) => [(prev + 1) % SLIDES.length, 1]);
+    }, 6000);
+  };
+
+  useEffect(() => {
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
+
+  const paginate = (newDirection: number) => {
+    setSlide(([prev]) => {
+      const next = newDirection > 0
+        ? (prev + 1) % SLIDES.length
+        : (prev - 1 + SLIDES.length) % SLIDES.length;
+      return [next, newDirection];
+    });
+    startTimer();
+  };
+
+  const slide = SLIDES[currentSlide];
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden section-dark noise-overlay">
-      {/* Animated Gradient Mesh Background */}
-      <div className="absolute inset-0 gradient-mesh opacity-60" />
-      
-      {/* Animated Floating Glow - moves across hero */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <section className="relative w-full h-[55vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] overflow-hidden mt-[68px]">
+      {/* Slide images — horizontal slide transition, no white flash */}
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
-          className="absolute w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]"
-          animate={{
-            x: ["-10%", "80%", "50%", "20%", "-10%"],
-            y: ["-20%", "10%", "60%", "30%", "-20%"],
-            scale: [1, 1.2, 0.9, 1.1, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute w-[400px] h-[400px] bg-steel/15 rounded-full blur-[120px]"
-          animate={{
-            x: ["80%", "20%", "-10%", "60%", "80%"],
-            y: ["60%", "20%", "50%", "80%", "60%"],
-            scale: [0.8, 1.1, 1, 0.9, 0.8],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute w-[350px] h-[350px] bg-accent/10 rounded-full blur-[100px]"
-          animate={{
-            x: ["50%", "10%", "70%", "30%", "50%"],
-            y: ["30%", "70%", "20%", "50%", "30%"],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      {/* Global Route Lines SVG */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-        <svg
-          className="absolute w-full h-full"
-          viewBox="0 0 1200 800"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          key={currentSlide}
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
+          className="absolute inset-0"
         >
-          <motion.path
-            d="M0 400 Q300 200 600 400 T1200 400"
-            stroke="url(#routeGradient)"
-            strokeWidth="1"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.6 }}
-            transition={{ duration: 3, delay: 0.5, ease: "easeInOut" }}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('${slide.image}')` }}
           />
-          <motion.path
-            d="M0 500 Q400 300 800 500 T1200 300"
-            stroke="url(#routeGradient)"
-            strokeWidth="0.5"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.4 }}
-            transition={{ duration: 4, delay: 1, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M100 600 Q500 400 900 600 T1100 200"
-            stroke="url(#routeGradient)"
-            strokeWidth="0.5"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 0.3 }}
-            transition={{ duration: 5, delay: 1.5, ease: "easeInOut" }}
-          />
-          <defs>
-            <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(254 100% 65%)" stopOpacity="0" />
-              <stop offset="50%" stopColor="hsl(254 100% 65%)" stopOpacity="1" />
-              <stop offset="100%" stopColor="hsl(254 100% 65%)" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#212529]/85 via-[#212529]/55 to-[#212529]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#212529]/40 via-transparent to-transparent" />
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="container-wide relative z-10 pt-24 md:pt-32 pb-24 md:pb-32">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-sm font-medium text-primary mb-8"
-          >
-            <Factory className="h-4 w-4" />
-            Manufacturer & Merchant Exporter
-          </motion.div>
+      {/* Decorative glow */}
+      <div className="absolute top-10 right-20 w-72 h-72 bg-[#E0323C]/10 rounded-full blur-3xl pointer-events-none z-[1] hidden md:block" />
 
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-[1.1] text-balance"
-          >
-            Premium Industrial Gloves.{" "}
-            <span className="text-gradient">Global Supply.</span>{" "}
-            <br className="hidden lg:block" />
-            Export-Ready Quality.
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-            className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl mx-auto prose-custom"
-          >
-            {COMPANY.description} Trusted by distributors and procurement teams across 50+ countries.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-          >
-            <Button asChild size="lg" className="text-base px-8 btn-glow">
-              <Link to="/products">View Products</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="text-base px-8 border-white/20 text-white hover:bg-white/10 hover:text-white"
-            >
-              <Link to="/contact">Request a Quote</Link>
-            </Button>
-          </motion.div>
-
-          {/* Trust Badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-3 mb-16"
-          >
-            {TRUST_BADGES.map((badge, index) => {
-              const Icon = iconMap[badge.icon as keyof typeof iconMap];
-              return (
+      {/* Content — Left Aligned */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="container-wide">
+          <div className="max-w-2xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="space-y-4 md:space-y-5"
+              >
+                {/* Subtitle Badge */}
                 <motion.div
-                  key={badge.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  <Icon className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-white/90">
-                    {badge.label}
+                  <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-sans px-4 sm:px-5 py-1.5 sm:py-2 rounded-full">
+                    <span className="w-2 h-2 rounded-full bg-[#E0323C] animate-pulse" />
+                    {slide.subtitle}
                   </span>
                 </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
 
-        {/* Stats Strip */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {STATS.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                className="card-elevated-dark p-5 md:p-6 text-center group hover:border-primary/30 transition-colors"
-              >
-                <div className="text-2xl md:text-3xl font-bold text-gradient mb-1">
-                  <AnimatedCounter value={stat.value} />
-                </div>
-                <div className="text-xs md:text-sm text-white/60 group-hover:text-white/80 transition-colors">
-                  {stat.label}
-                </div>
+                {/* Headline */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-heading font-black text-white leading-[0.95] tracking-tight"
+                >
+                  {slide.headline}
+                  <br />
+                  <span className="text-[#E0323C]">{slide.headlineAccent}</span>
+                </motion.h1>
+
+                {/* Description */}
+                <motion.p
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.55, duration: 0.4 }}
+                  className="text-sm sm:text-base md:text-lg text-white/70 max-w-md leading-relaxed font-sans font-light"
+                >
+                  {slide.description}
+                </motion.p>
+
+                {/* CTAs */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.4 }}
+                  className="flex flex-col sm:flex-row gap-3 pt-2"
+                >
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-[#E0323C] hover:bg-[#c92a34] text-white rounded-full px-6 sm:px-7 h-11 sm:h-12 text-sm font-bold uppercase tracking-wider shadow-2xl shadow-[#E0323C]/30 hover:-translate-y-1 transition-all group w-full sm:w-auto"
+                  >
+                    <Link to="/contact">
+                      Enquire Now
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="bg-white/10 backdrop-blur-sm border-white/30 text-white rounded-full px-6 sm:px-7 h-11 sm:h-12 text-sm font-semibold hover:bg-white hover:text-[#212529] transition-all w-full sm:w-auto"
+                  >
+                    <Link to="/products">
+                      View Products
+                    </Link>
+                  </Button>
+                </motion.div>
               </motion.div>
-            ))}
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Wave Separator */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 md:h-24 z-10 translate-y-[1px]">
-        <svg
-          viewBox="0 0 1440 320"
-          className="w-full h-full text-[hsl(var(--section-light))] fill-current"
-          preserveAspectRatio="none"
-        >
-          <path d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" />
-        </svg>
+      {/* Bottom Controls */}
+      <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 z-20">
+        <div className="container-wide flex items-center justify-between">
+          {/* Slide Indicators */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {SLIDES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  const dir = index > currentSlide ? 1 : -1;
+                  setSlide([index, dir]);
+                  startTimer();
+                }}
+                className={`rounded-full transition-all duration-300 ${currentSlide === index ? "w-8 sm:w-10 h-2 bg-[#E0323C]" : "w-2 h-2 bg-white/40 hover:bg-white/60"
+                  }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Nav Arrows */}
+          <div className="hidden sm:flex gap-3">
+            <button
+              onClick={() => paginate(-1)}
+              className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-[#212529] transition-all backdrop-blur-sm"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => paginate(1)}
+              className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-[#212529] transition-all backdrop-blur-sm"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   );

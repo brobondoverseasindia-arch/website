@@ -8,18 +8,18 @@ const About = () => {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="section-padding section-dark">
+      <section className="section-padding bg-background border-b border-white/10">
         <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-[hsl(var(--section-dark-foreground))] mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               About BroBond Overseas
             </h1>
-            <p className="text-lg text-[hsl(var(--section-dark-foreground))]/70">
-              A leading manufacturer and merchant exporter of premium industrial gloves and safety products, 
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              A leading manufacturer and merchant exporter of premium industrial gloves and safety products,
               headquartered in Kolkata, India. We combine manufacturing excellence with global export expertise.
             </p>
           </motion.div>
@@ -40,20 +40,20 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  Founded in Kolkata, {COMPANY.name} has grown from a local manufacturer to a 
-                  globally recognized exporter of industrial safety products. Our journey began 
-                  with a simple mission: to provide premium quality protective equipment to 
+                  Founded in Kolkata, {COMPANY.name} has grown from a local manufacturer to a
+                  globally recognized exporter of industrial safety products. Our journey began
+                  with a simple mission: to provide premium quality protective equipment to
                   workers worldwide.
                 </p>
                 <p>
-                  Today, we export to over 50 countries, serving major distributors, procurement 
-                  teams, and industrial buyers across the globe. Our state-of-the-art manufacturing 
-                  facility combines traditional craftsmanship with modern technology to deliver 
+                  Today, we export to over 50 countries, serving major distributors, procurement
+                  teams, and industrial buyers across the globe. Our state-of-the-art manufacturing
+                  facility combines traditional craftsmanship with modern technology to deliver
                   consistent quality in every product.
                 </p>
                 <p>
-                  As both a manufacturer and merchant exporter, we offer complete control over 
-                  quality, pricing, and delivery timelines—ensuring our partners receive the 
+                  As both a manufacturer and merchant exporter, we offer complete control over
+                  quality, pricing, and delivery timelines—ensuring our partners receive the
                   best value and service in the industry.
                 </p>
               </div>
@@ -64,11 +64,11 @@ const About = () => {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="aspect-[4/3] rounded-2xl bg-secondary overflow-hidden">
+              <div className="aspect-[4/3] rounded-2xl bg-secondary overflow-hidden shadow-lg border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800"
                   alt="Manufacturing facility"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
                 />
               </div>
             </motion.div>
@@ -77,19 +77,22 @@ const About = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className="section-padding section-dark">
-        <div className="container-wide">
+      <section className="section-padding bg-background relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="container-wide relative z-10">
           <div className="grid gap-8 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="p-8 rounded-2xl card-elevated-dark"
+              className="p-8 rounded-2xl bg-card border border-white/10 shadow-lg hover:shadow-primary/5 transition-all"
             >
-              <h3 className="text-2xl font-bold text-[hsl(var(--section-dark-foreground))] mb-4">Our Mission</h3>
-              <p className="text-[hsl(var(--section-dark-foreground))]/70">
-                To provide premium quality industrial safety products that protect workers worldwide, 
-                while building lasting partnerships with distributors and buyers through exceptional 
+              <h3 className="text-2xl font-bold text-primary mb-4">Our Mission</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To provide premium quality industrial safety products that protect workers worldwide,
+                while building lasting partnerships with distributors and buyers through exceptional
                 service, competitive pricing, and reliable delivery.
               </p>
             </motion.div>
@@ -98,12 +101,12 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="p-8 rounded-2xl card-elevated-dark"
+              className="p-8 rounded-2xl bg-card border border-white/10 shadow-lg hover:shadow-primary/5 transition-all"
             >
-              <h3 className="text-2xl font-bold text-[hsl(var(--section-dark-foreground))] mb-4">Our Vision</h3>
-              <p className="text-[hsl(var(--section-dark-foreground))]/70">
-                To become the most trusted name in industrial safety exports, recognized globally 
-                for quality, innovation, and customer-centric approach. We aim to expand our reach 
+              <h3 className="text-2xl font-bold text-primary mb-4">Our Vision</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To become the most trusted name in industrial safety exports, recognized globally
+                for quality, innovation, and customer-centric approach. We aim to expand our reach
                 to 100+ countries while maintaining the highest standards of manufacturing excellence.
               </p>
             </motion.div>
@@ -205,7 +208,7 @@ const About = () => {
                 Global Export Network
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                We proudly serve customers across 50+ countries with reliable logistics, 
+                We proudly serve customers across 50+ countries with reliable logistics,
                 export-ready documentation, and dedicated support for international buyers.
               </p>
               <div className="flex flex-wrap justify-center gap-3">

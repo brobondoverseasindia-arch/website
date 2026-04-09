@@ -25,10 +25,7 @@ interface ProductCardProps {
   className?: string;
 }
 
-export function ProductCard({ product, variant = "light", className }: ProductCardProps) {
-  const isDark = variant === "dark";
-  
-  // Get first variant's first image as main image
+export function ProductCard({ product, className }: ProductCardProps) {
   const mainImage = product.product_variants?.[0]?.product_images?.[0]?.url;
   const colors = product.product_variants?.map((v) => ({
     name: v.color_name,
@@ -39,85 +36,60 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
     <Link
       to={`/products/${product.slug}`}
       className={cn(
-        "group block rounded-xl overflow-hidden hover-lift transition-all duration-300 flex flex-col h-full",
-        isDark
-          ? "card-elevated-dark"
-          : "card-elevated",
+        "group block rounded-2xl overflow-hidden bg-white border border-gray-100 transition-all duration-300 flex flex-col h-full",
+        "hover:border-[#E0323C]/20 hover:shadow-2xl hover:shadow-red-50 hover:-translate-y-1.5",
         className
       )}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-secondary/50 overflow-hidden">
+      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
         {mainImage ? (
           <img
             src={mainImage}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
         ) : (
-          <div className={cn(
-            "w-full h-full flex items-center justify-center",
-            isDark ? "bg-white/5" : "bg-secondary"
-          )}>
-            <span className={isDark ? "text-white/40" : "text-muted-foreground"}>
-              No image
-            </span>
+          <div className="w-full h-full flex items-center justify-center bg-gray-50">
+            <span className="text-gray-300 font-sans text-sm">No image</span>
           </div>
         )}
-        
+
         {/* Category Badge */}
         {product.category && (
-          <span className={cn(
-            "absolute top-3 left-3 px-3 py-1.5 text-xs font-medium rounded-full backdrop-blur-sm",
-            isDark
-              ? "bg-black/50 text-white border border-white/10"
-              : "bg-white/90 text-foreground shadow-sm"
-          )}>
+          <span className="absolute top-3 left-3 px-3 py-1.5 text-xs font-semibold font-sans rounded-lg bg-white/90 backdrop-blur-sm text-gray-700 shadow-sm border border-gray-100">
             {product.category.name}
           </span>
         )}
 
-        {/* Quick Action Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end justify-center pb-4 opacity-100 group-hover:opacity-100 transition-opacity duration-300">
-          <span className={cn(
-            "px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground shadow-lg transform translate-y-0 group-hover:scale-105 transition-all duration-300"
-          )}>
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="px-5 py-2.5 rounded-xl text-sm font-bold font-sans bg-[#E0323C] text-white shadow-lg transform translate-y-3 group-hover:translate-y-0 transition-all duration-300">
             View Details
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-1">
-        <h3 className={cn(
-          "font-semibold mb-3 text-lg group-hover:text-primary transition-colors line-clamp-1",
-          isDark ? "text-white" : "text-foreground"
-        )}>
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-heading text-lg font-bold mb-2 text-[#212529] group-hover:text-[#E0323C] transition-colors line-clamp-1">
           {product.name}
         </h3>
-        
+
         {product.short_description && (
-          <p className={cn(
-            "text-sm line-clamp-2 mb-6 leading-relaxed",
-            isDark ? "text-white/60" : "text-muted-foreground"
-          )}>
+          <p className="text-sm line-clamp-2 mb-4 leading-relaxed text-[#6F7183] font-sans">
             {product.short_description}
           </p>
         )}
 
         {/* Tags */}
         {product.tags && product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6 mt-auto">
+          <div className="flex flex-wrap gap-2 mb-4 mt-auto">
             {product.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className={cn(
-                  "px-2.5 py-1 text-xs font-medium rounded-md",
-                  isDark
-                    ? "bg-white/5 text-white/70 border border-white/10"
-                    : "bg-secondary text-secondary-foreground"
-                )}
+                className="px-2.5 py-1 text-xs font-medium rounded-full bg-red-50 text-[#E0323C]/70 border border-red-100/50 font-sans"
               >
                 {tag}
               </span>
@@ -126,42 +98,28 @@ export function ProductCard({ product, variant = "light", className }: ProductCa
         )}
 
         {/* Colors & CTA */}
-        <div className={cn(
-          "flex items-center justify-between pt-5 mt-auto border-t",
-          isDark ? "border-white/10" : "border-border/50"
-        )}>
+        <div className="flex items-center justify-between pt-4 mt-auto border-t border-gray-100">
           {colors && colors.length > 0 ? (
             <div className="flex items-center -space-x-1.5 hover:space-x-0.5 transition-all duration-300">
               {colors.slice(0, 4).map((color, i) => (
                 <div
                   key={i}
-                  className={cn(
-                    "w-6 h-6 rounded-full border-2 shadow-sm transition-transform hover:scale-110 hover:z-10",
-                    isDark ? "border-[hsl(var(--card))]" : "border-background"
-                  )}
+                  className="w-6 h-6 rounded-full border-2 border-white shadow-sm transition-transform hover:scale-110 hover:z-10"
                   style={{ backgroundColor: color.hex || "#ccc" }}
                   title={color.name}
                 />
               ))}
               {colors.length > 4 && (
-                <div className={cn(
-                  "w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-medium",
-                  isDark 
-                    ? "border-[hsl(var(--card))] bg-white/10 text-white" 
-                    : "border-background bg-secondary text-muted-foreground"
-                )}>
+                <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-medium bg-gray-100 text-gray-500 font-sans">
                   +{colors.length - 4}
                 </div>
               )}
             </div>
           ) : (
-            <div /> // Spacer if no colors
+            <div />
           )}
-          
-          <span className={cn(
-            "text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all",
-            isDark ? "text-primary-foreground/90 group-hover:text-primary" : "text-primary"
-          )}>
+
+          <span className="text-sm font-semibold font-sans flex items-center gap-1.5 text-[#E0323C] group-hover:gap-2.5 transition-all">
             Details
             <ArrowRight className="h-4 w-4" />
           </span>
