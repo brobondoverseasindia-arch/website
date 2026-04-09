@@ -8,11 +8,11 @@ export const COMPANY = {
   email: "info@brobondoverseas.com",
   whatsapp: "+91 7980807953",
   address: {
-    street: "123 Industrial Park, Sector V",
+    street: "17D, Trinathpally Nowbhanga , Salt Lake Sector 4",
     city: "Kolkata",
     state: "West Bengal",
     country: "India",
-    zip: "700091"
+    zip: "700105"
   },
   social: {
     linkedin: "https://linkedin.com/",
