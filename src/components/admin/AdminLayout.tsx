@@ -29,6 +29,60 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("adminAuth") === "true";
+  });
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === "Brobond26@") {
+      setIsAuthenticated(true);
+      sessionStorage.setItem("adminAuth", "true");
+      setError("");
+    } else {
+      setError("Incorrect password");
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminAuth");
+    setIsAuthenticated(false);
+    setPassword("");
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-secondary/30 flex items-center justify-center p-4">
+        <div className="bg-card p-8 rounded-2xl shadow-xl max-w-md w-full border border-border">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 rounded-xl bg-[#E0323C] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#E0323C]/20">
+              <span className="text-3xl font-black font-heading text-white">B</span>
+            </div>
+            <h1 className="text-2xl font-bold font-heading text-foreground">Admin Login</h1>
+            <p className="text-muted-foreground mt-2 text-sm">Enter the password to access the admin panel.</p>
+          </div>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-[#E0323C] transition-all"
+              />
+            </div>
+            {error && <p className="text-sm font-medium text-red-500">{error}</p>}
+            <Button type="submit" className="w-full h-11 bg-[#E0323C] hover:bg-[#c92a34] text-white rounded-xl shadow-md">
+              Login
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-secondary/30">
       {/* Mobile header */}
@@ -89,6 +143,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             })}
           </nav>
 
+          <div className="p-4 border-t border-border mt-auto">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors w-full text-left text-muted-foreground hover:bg-red-50 hover:text-red-600"
+            >
+              <LogOut className="h-5 w-5" />
+              <span className="font-medium">Logout</span>
+            </button>
+          </div>
         </div>
       </aside>
 

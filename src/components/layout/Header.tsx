@@ -24,17 +24,15 @@ export function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white border-b",
         isScrolled
-          ? "border-gray-200 shadow-lg shadow-black/5 py-2"
-          : "border-gray-100 py-3"
+          ? "border-gray-200 shadow-lg shadow-black/5 py-1"
+          : "border-gray-100 py-2"
       )}
     >
       <div className="container-wide">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="relative z-10 flex items-center gap-3 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E0323C] text-white shadow-lg shadow-[#E0323C]/20 transition-transform group-hover:scale-105">
-              <span className="text-xl font-black font-heading">B</span>
-            </div>
+            <img src="/logo.png" alt="Brobond Overseas" className="h-16 w-auto transition-transform group-hover:scale-105" />
             <div className="flex flex-col">
               <span className="text-lg sm:text-xl font-black font-heading leading-none tracking-tight text-[#212529]">
                 BROBOND
