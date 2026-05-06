@@ -11,8 +11,8 @@ export const COMPANY = {
     street: "17D, Trinathpally Nowbhanga , Salt Lake Sector 4",
     city: "Kolkata",
     state: "West Bengal",
-    country: "India",
-    zip: "700105"
+    zip: "700105",
+    country: "India"
   },
   social: {
     linkedin: "https://linkedin.com/",
@@ -92,31 +92,31 @@ export const WHY_CHOOSE_US = [
 
 export const TESTIMONIALS = [
   {
-    name: "Michael Schmidt",
-    company: "Schmidt Industrial GmbH",
-    country: "Germany",
-    content: "BroBond's nitrile gloves have become our preferred choice. The quality is consistent, and their export documentation is always perfect.",
+    name: "Rajesh Kumar",
+    company: "RK Fabrication Works",
+    country: "India",
+    content: "The leather welding hood quality is outstanding. It provides excellent protection against sparks and heat, and the comfort level is very good for long working hours.",
     rating: 5,
   },
   {
-    name: "Sarah Johnson",
-    company: "SafetyFirst Distribution",
-    country: "USA",
-    content: "We've been importing from BroBond for 3 years. Their attention to packaging and timely delivery sets them apart from other suppliers.",
+    name: "Amit Das",
+    company: "Eastern Metal Industries",
+    country: "India",
+    content: "Very durable and well-stitched safety hood. The material feels premium and gives full coverage during welding operations.",
+    rating: 5,
+  },
+  {
+    name: "Sandeep Yadav",
+    company: "Yadav Engineering Solutions",
+    country: "India",
+    content: "We have been using these welding hoods in our workshop regularly. The product quality and finishing are excellent for industrial use.",
     rating: 4,
   },
   {
-    name: "Ahmed Al-Rashid",
-    company: "Gulf Safety Supplies",
-    country: "UAE",
-    content: "Excellent product range and competitive pricing. The team is very responsive to our custom requirements.",
-    rating: 5,
-  },
-  {
-    name: "Jennifer Wong",
-    company: "Pacific Safety Equipment",
-    country: "Australia",
-    content: "The cut-resistant gloves we source from BroBond receive excellent feedback from our mining sector clients.",
+    name: "Mohit Sharma",
+    company: "Sharma Industrial Tools",
+    country: "India",
+    content: "Reliable safety gear with strong leather quality and comfortable fitting. Highly recommended for fabrication and heavy-duty welding work.",
     rating: 5,
   },
 ] as const;
@@ -125,16 +125,16 @@ export const FOUNDERS = [
   {
     name: "Laltu Mondal",
     role: "Co-Founder & Managing Director",
-    bio: "With over 25 years in industrial safety manufacturing, Rajesh leads our production and quality initiatives. His vision has transformed BroBond into a global export powerhouse.",
-    image: "/placeholder.svg",
-    linkedin: "https://linkedin.com/in/rajeshsharma"
+    bio: "With over 25 years in industrial safety manufacturing, Laltu leads our production and quality initiatives. His vision has transformed BroBond into a global export powerhouse.",
+    image: "/laltumandal.jpeg",
+    // linkedin: "https://linkedin.com/in/rajeshsharma"
   },
   {
-    name: "Laltu Mondal",
+    name: "Santu Mondal",
     role: "Co-Founder & Director of International Sales",
-    bio: "Priya brings 20 years of experience in international trade and export management. She has built our global network spanning 50+ countries.",
+    bio: "Santu has 10 years of experience in international trade and export management. He has built our global network spanning 5+ countries.",
     image: "/placeholder.svg",
-    linkedin: "https://linkedin.com/in/priyabanerjee"
+    // linkedin: "https://linkedin.com/in/priyabanerjee"
   }
 ] as const;
 

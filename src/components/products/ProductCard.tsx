@@ -97,28 +97,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
           </div>
         )}
 
-        {/* Colors & CTA */}
-        <div className="flex items-center justify-between pt-4 mt-auto border-t border-gray-100">
-          {colors && colors.length > 0 ? (
-            <div className="flex items-center -space-x-1.5 hover:space-x-0.5 transition-all duration-300">
-              {colors.slice(0, 4).map((color, i) => (
-                <div
-                  key={i}
-                  className="w-6 h-6 rounded-full border-2 border-white shadow-sm transition-transform hover:scale-110 hover:z-10"
-                  style={{ backgroundColor: color.hex || "#ccc" }}
-                  title={color.name}
-                />
-              ))}
-              {colors.length > 4 && (
-                <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-medium bg-gray-100 text-gray-500 font-sans">
-                  +{colors.length - 4}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div />
-          )}
-
+        {/* CTA */}
+        <div className="flex items-center justify-end pt-4 mt-auto border-t border-gray-100">
           <span className="text-sm font-semibold font-sans flex items-center gap-1.5 text-[#E0323C] group-hover:gap-2.5 transition-all">
             Details
             <ArrowRight className="h-4 w-4" />

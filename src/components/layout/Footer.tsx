@@ -12,9 +12,7 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-5 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E0323C] text-white shadow-lg flex-shrink-0">
-                <span className="text-xl font-black font-heading">B</span>
-              </div>
+              <img src="/logo.png" alt="Brobond Overseas" className="h-16 w-auto" />
               <div>
                 <span className="text-lg font-heading font-black text-white block leading-tight">BROBOND</span>
                 <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-gray-500 font-sans">Overseas</span>
@@ -69,8 +67,8 @@ export function Footer() {
                 <MapPin className="h-4 w-4 text-[#E0323C] mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-gray-400 leading-relaxed font-sans">
                   {COMPANY.address.street}<br />
-                  {COMPANY.address.city}, {COMPANY.address.state}<br />
-                  {COMPANY.address.country} - {COMPANY.address.zip}
+                  {COMPANY.address.city}, {COMPANY.address.state}, {COMPANY.address.zip}<br />
+                  {COMPANY.address.country}
                 </span>
               </li>
               <li className="flex items-center gap-3">

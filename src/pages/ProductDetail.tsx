@@ -253,12 +253,6 @@ const ProductDetail = () => {
                       Key Features
                     </TabsTrigger>
                     <TabsTrigger
-                      value="specifications"
-                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
-                    >
-                      Specifications
-                    </TabsTrigger>
-                    <TabsTrigger
                       value="applications"
                       className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#0F766E] data-[state=active]:bg-transparent px-0 pb-2 text-gray-500 data-[state=active]:text-[#0F766E] whitespace-nowrap"
                     >
@@ -290,29 +284,6 @@ const ProductDetail = () => {
                       </ul>
                     ) : (
                       <p className="text-sm text-muted-foreground">No key features specified.</p>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="specifications" className="mt-0">
-                    {specifications.length > 0 ? (
-                      <div className="rounded-lg border border-gray-100 overflow-hidden text-sm">
-                        <table className="w-full">
-                          <tbody>
-                            {specifications.map((spec, i) => (
-                              <tr key={i} className={i % 2 === 0 ? "bg-gray-50/50" : ""}>
-                                <td className="px-3 py-2 font-medium text-gray-900 w-1/3 border-r border-gray-100">
-                                  {spec.label}
-                                </td>
-                                <td className="px-3 py-2 text-gray-600">
-                                  {spec.value}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">No specifications available.</p>
                     )}
                   </TabsContent>
 

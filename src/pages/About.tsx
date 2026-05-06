@@ -66,7 +66,7 @@ const About = () => {
             >
               <div className="aspect-[4/3] rounded-2xl bg-secondary overflow-hidden shadow-lg border border-white/10">
                 <img
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800"
+                  src="https://i1-e.pinimg.com/1200x/d9/30/fe/d930fea2a223823b5a6c602f755f2cdc.jpg"
                   alt="Manufacturing facility"
                   className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
                 />
@@ -147,7 +147,7 @@ const About = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   {founder.bio}
                 </p>
-                <a
+                {/* <a
                   href={founder.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -155,7 +155,7 @@ const About = () => {
                 >
                   <Linkedin className="h-4 w-4" />
                   LinkedIn Profile
-                </a>
+                </a> */}
               </motion.div>
             ))}
           </div>
@@ -212,7 +212,7 @@ const About = () => {
                 export-ready documentation, and dedicated support for international buyers.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
-                {["USA", "Germany", "UK", "UAE", "Australia", "Canada", "Japan", "South Africa", "Brazil", "Singapore"].map(
+                {["USA", "Germany", "UK", "UAE", "Australia",].map(
                   (country) => (
                     <span
                       key={country}
@@ -223,7 +223,7 @@ const About = () => {
                   )
                 )}
                 <span className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium">
-                  +40 more
+                  +10 more
                 </span>
               </div>
             </motion.div>

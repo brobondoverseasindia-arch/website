@@ -4,26 +4,33 @@ import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 
 const TESTIMONIALS = [
   {
-    content: "BroBond Overseas has been our go-to supplier for industrial safety gear for over 5 years. Their bulk manufacturing capabilities and adherence to European safety standards are unmatched.",
-    name: "Marcus Bergstrom",
-    company: "Nordic Industrial Procurement",
-    country: "Sweden",
+    name: "Rajesh Kumar",
+    company: "RK Fabrication Works",
+    country: "India",
+    content: "The leather welding hood quality is outstanding. It provides excellent protection against sparks and heat, and the comfort level is very good for long working hours.",
     rating: 5,
   },
   {
-    content: "The custom protective aprons they manufactured for our chemical plants have significantly reduced workplace incidents. Excellent quality & competitive pricing.",
-    name: "Elena Rodriguez",
-    company: "Global ChemCorp",
-    country: "Spain",
+    name: "Amit Das",
+    company: "Eastern Metal Industries",
+    country: "India",
+    content: "Very durable and well-stitched safety hood. The material feels premium and gives full coverage during welding operations.",
     rating: 5,
   },
   {
-    content: "We procure thousands of safety gloves quarterly from BroBond Overseas. Their consistent quality control and prompt global shipping make them a valuable tier-1 supply partner.",
-    name: "James Chen",
-    company: "Pacific Manufacturing Solutions",
-    country: "Singapore",
+    name: "Daniel Foster",
+    company: "Foster Industrial Supplies",
+    country: "United Kingdom",
+    content: "We imported welding safety products from BroBond and were highly impressed with the product quality, packaging, and timely shipment process.",
     rating: 5,
-  }
+  },
+  {
+    name: "Ahmed Al Rashid",
+    company: "Al Rashid Safety Equipment LLC",
+    country: "UAE",
+    content: "BroBond has been a reliable export partner for our safety equipment requirements. Their leather protective products meet international quality expectations consistently.",
+    rating: 5,
+  },
 ];
 
 export function TestimonialsSection() {

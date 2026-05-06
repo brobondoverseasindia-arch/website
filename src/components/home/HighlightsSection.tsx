@@ -22,14 +22,14 @@ export function HighlightsSection() {
           >
             <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-[4/3] group">
               <img
-                src="https://images.unsplash.com/photo-1581092162384-8987c1d64718?auto=format&fit=crop&q=80&w=1000"
+                src="https://i1-e.pinimg.com/1200x/6d/ed/4d/6ded4d70a77c12f6bc47083fb8ada308.jpg"
                 alt="BroBond Overseas Manufacturing Facility"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#212529]/70 via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                 <div className="flex items-end gap-4">
-                  <span className="text-4xl sm:text-5xl font-heading font-black text-[#E0323C]">15+</span>
+                  <span className="text-4xl sm:text-5xl font-heading font-black text-[#E0323C]">5+</span>
                   <span className="text-sm sm:text-base font-heading text-white/90 pb-1">Years of<br />Excellence</span>
                 </div>
               </div>
